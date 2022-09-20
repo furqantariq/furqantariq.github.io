@@ -1,0 +1,58 @@
+baseURL = 'furqantariq.github.io'
+languageCode = 'en-us'
+title = "furqan's site"
+theme = 'cactus'
+copyright = "Furqan Tariq"
+
+
+# theme color
+# available options: dark, light, white, classic
+[params]
+    colortheme = "dark"
+    description = "Hi there,"
+    mainSection = "posts"
+    mainSectionTitle = "Posts"
+    showAllPostsOnHomePage = false
+    postsOnHomePage = 3
+    tagsOverview = false
+    showProjectsList = true
+    projectsUrl = "https://github.com/furqantariq"
+    mathjax = true
+    googleAnalytics = "G-3SNBC5QD82"
+    
+
+# navigation
+[[menu.main]]
+    name = "home"
+    url = "/"
+    weight = 1
+
+[[menu.main]]
+    name = "posts"
+    url = "/posts"
+    weight = 2
+
+[[menu.main]]
+    name = "tags"
+    url = "/tags"
+    weight = 3
+
+[[menu.main]]
+    name = "about"
+    url = "/about"
+    weight = 4
+
+
+# social media links
+[[params.social]]
+    name = "github"
+    link = "https://github.com/furqantariq"
+
+[[params.social]]
+    name = "youtube"
+    link = "https://www.youtube.com/channel/UCi5cM4fLu56MCDHlgN_phJA"
+
+[[params.social]]
+    name = "twitch"
+    link = "https://twitch.tv/frezzhberry"
+
