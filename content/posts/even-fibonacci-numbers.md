@@ -11,7 +11,7 @@ The problem states
 >By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
 
 
-To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Because the first two numbers of fibonacci sequeunce are odd and even number, then the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surround by two consecutive odd numbers and positioned at $ 2k+1 $ for any $k$ in a sequence as shown below:     
+To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surround by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:     
 
 | Odd | Even | Odd | Odd | Even | Odd | Odd | Even | Odd | Odd | Even |.. |
 |:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|---|
@@ -49,13 +49,22 @@ Here $n=2k+3$ means that $(n+1)th$ number will point to the position of even num
 
 Lets calculate the first three even fibonacci numbers to test our equations       
 
-| $k$ | $n$ | $f(n)$ odd number | $f(n+1)$ even number |
-|:-:|:-:|:-:|:-:|
-| - | - | $f(1) = 1 $ *(base)* | $ f(2) = 2 $ *(base)* |
-| 1 | 4 | $f(4)=2 \times f(2) + f(1) = (2 \times 2) + 1 = 5 $ | $ f(5)=2 \times f(4) - f(2) = (2 \times 5) - 2 = 8 $ |
-| 2 | 7 | $f(7)=2 \times f(5) + f(4) = (2 \times 8) + 5 = 21 $ | $ f(8)=2 \times f(7) - f(5) = (2 \times 21) - 8 = 34 $ |
-| 3 | 9 | $f(9)=2 \times f(8) + f(7) = (2 \times 34) + 21 = 89 $ | $ f(10)=2 \times f(9) - f(8) = (2 \times 89) - 34 = 144 $ |
-     
+
+| $k$ | $n$ | $f(n)$ odd number | 
+|:-:|:-:|:-:|
+| - | - | $f(1) = 1 $ *(base)* |
+| 1 | 4 | $f(4)=2 \times f(2) + f(1) = (2 \times 2) + 1 = 5 $ |
+| 2 | 7 | $f(7)=2 \times f(5) + f(4) = (2 \times 8) + 5 = 21 $ |
+| 3 | 9 | $f(9)=2 \times f(8) + f(7) = (2 \times 34) + 21 = 89 $ |
+               
+| $k$ | $n$ | $f(n+1)$ even number |
+|:-:|:-:|:-:|
+| - | - | $ f(2) = 2 $ *(base)* |
+| 1 | 4 | $ f(5)=2 \times f(4) - f(2) = (2 \times 5) - 2 = 8 $ |
+| 2 | 7 | $ f(8)=2 \times f(7) - f(5) = (2 \times 21) - 8 = 34 $ |
+| 3 | 9 | $ f(10)=2 \times f(9) - f(8) = (2 \times 89) - 34 = 144 $ |
+         
+
 \
 Here is the complete solution in Python      
 ```python
