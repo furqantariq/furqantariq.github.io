@@ -56,3 +56,6 @@ googleAnalytics = "G-3SNBC5QD82"
     name = "twitch"
     link = "https://twitch.tv/frezzhberry"
 
+[[params.social]]
+    name = "steam"
+    link = "https://steamcommunity.com/id/furqan"
