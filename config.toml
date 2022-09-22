@@ -3,6 +3,7 @@ languageCode = 'en-us'
 title = "furqan's site"
 theme = 'cactus'
 copyright = "Furqan Tariq"
+googleAnalytics = "G-3SNBC5QD82"
 
 
 # theme color
@@ -18,7 +19,6 @@ copyright = "Furqan Tariq"
     showProjectsList = true
     projectsUrl = "https://github.com/furqantariq"
     mathjax = true
-    googleAnalytics = "G-3SNBC5QD82"
     
 
 # navigation
