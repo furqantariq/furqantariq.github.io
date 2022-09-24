@@ -11,6 +11,7 @@ googleAnalytics = "G-3SNBC5QD82"
 [params]
     colortheme = "dark"
     description = "Hi there,"
+    images = ["images/test.png"]
     mainSection = "posts"
     mainSectionTitle = "Posts"
     showAllPostsOnHomePage = false
