@@ -1,8 +1,6 @@
 {{ define "main" }}
   <section id="about">
-  {{ if isset .Site.Params "description" }}
-    {{ .Site.Params.description | $.Page.RenderString }}
-  {{ end }}
+      <center><img src="images/front.jpg" style="height:100%; width:100%; object-fit:contain;"></center>
   {{ if isset .Site.Params "social" }}
       <p>Find me on
       {{ $length := (len .Site.Params.social) }}
