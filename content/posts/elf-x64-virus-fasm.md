@@ -266,7 +266,7 @@ self rb self_size
 Here is the demo showing *helloworld* program being infected by the virus and then this infected program spreading 
 its infection to other programs
 
-[![asciicast](https://asciinema.org/a/528993.svg)](https://asciinema.org/a/528993)
+[![asciicast](https://asciinema.org/a/529026.svg)](https://asciinema.org/a/529026)
 
 ***NOTE:** Although i mentioned that the virus is harmless but during testing i found out that it has bug that 
 it disables commandline arguments of infected files, which is obviously never will be fixed, thanks to my laziness!*
