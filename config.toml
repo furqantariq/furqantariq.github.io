@@ -1,11 +1,9 @@
 baseURL = 'furqantariq.github.io'
 languageCode = 'en-us'
 title = "furqan's homepage"
-author = 'Furqan Tariq'
 theme = 'cactus'
 copyright = "Furqan Tariq"
 googleAnalytics = "G-3SNBC5QD82"
-
 
 # theme color
 # available options: dark, light, white, classic
