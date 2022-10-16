@@ -263,8 +263,8 @@ self rb self_size
 ```
 
 **DEMO**     
-Here is the demo showing *helloworld* program being infected by the virus and then this infected program spreading 
-its infection to other programs
+Here is the demo showing programs being infected by the virus and then these infected programs spreading 
+its infection to other clean programs
 
 [![asciicast](https://asciinema.org/a/529026.svg)](https://asciinema.org/a/529026)
 
