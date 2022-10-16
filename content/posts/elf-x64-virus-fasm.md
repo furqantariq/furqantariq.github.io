@@ -5,12 +5,12 @@ draft: true
 ---
 
 Recently, I was playing around with [flat assembler](https://flatassembler.net/) and i needed something to
-write in it. I tried ["Hello world"-program](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) but it was not
-enough. I generally believe that "Hello world"-program is not good way to learn about details of a programming 
+write in it. I tried ["Hello world" program](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) but it was not
+enough. I believe that generally "Hello world" programs are not a good way to learn about details of a programming 
 language, especially for somewhat experienced programmers.
 
 So I wrote a virus to familiarize myself to flat assembler. Because it is compact and has a everything from condition 
-control flows to loop constructs, not just printing out in standard output and it took me only couple of hours to write it. 
+control flows to loop constructs, not just printing out in standard output and it only took me couple of hours to write it. 
 
 It is harmless prepender virus and copies itself to the top of the infected program and infected program does 
 absolutley nothing harmful except printing a message that it is infected.
