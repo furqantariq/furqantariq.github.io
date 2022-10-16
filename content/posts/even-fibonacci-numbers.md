@@ -11,7 +11,7 @@ The problem states
 >By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
 
 
-To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surround by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:     
+To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surrounded by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:     
 
 | Odd | Even | Odd | Odd | Even | Odd | Odd | Even | Odd | Odd | Even |.. |
 |:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|---|

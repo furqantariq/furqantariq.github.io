@@ -9,7 +9,7 @@ googleAnalytics = "G-3SNBC5QD82"
 # theme color
 # available options: dark, light, white, classic
 [params]
-    colortheme = "dark"
+    colortheme = "light"
     description = "furqan's homepage"
     images = ["images/share.jpg"]
     mainSection = "posts"
@@ -37,11 +37,6 @@ googleAnalytics = "G-3SNBC5QD82"
     name = "tags"
     url = "/tags"
     weight = 3
-
-[[menu.main]]
-    name = "about"
-    url = "/about"
-    weight = 4
 
 
 # social media links
