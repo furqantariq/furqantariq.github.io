@@ -1,6 +1,7 @@
 ---
 title: "A ELF x64 Virus in fasm assembly"
 date: 2022-10-16T12:47:18+02:00
+tags: ["programming", "assembly", "viruses"]
 draft: true
 ---
 

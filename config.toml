@@ -1,6 +1,7 @@
 baseURL = 'furqantariq.github.io'
 languageCode = 'en-us'
 title = "furqan's homepage"
+author = 'Furqan Tariq'
 theme = 'cactus'
 copyright = "Furqan Tariq"
 googleAnalytics = "G-3SNBC5QD82"
@@ -11,7 +12,7 @@ googleAnalytics = "G-3SNBC5QD82"
 [params]
     colortheme = "light"
     description = "furqan's homepage"
-    images = ["images/share.jpg"]
+    images = ["images/share.gif"]
     mainSection = "posts"
     mainSectionTitle = "Posts"
     showAllPostsOnHomePage = false
