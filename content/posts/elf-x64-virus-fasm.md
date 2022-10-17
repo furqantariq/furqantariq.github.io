@@ -1,5 +1,5 @@
 ---
-title: "A ELF x64 Virus in fasm assembly"
+title: "An ELF x64 Virus in fasm assembly"
 date: 2022-10-16T12:47:18+02:00
 tags: ["programming", "assembly", "viruses"]
 ---
@@ -9,10 +9,10 @@ write in it. I tried ["Hello world" program](https://en.wikipedia.org/wiki/%22He
 enough. I believe that generally "Hello world" programs are not a good way to learn about details of a programming 
 language, especially for somewhat experienced programmers.
 
-So I wrote a virus to familiarize myself to flat assembler. Because it is compact and has a everything from condition 
+So I wrote a virus to familiarize myself to it. Because it is compact and has a everything from condition 
 control flows to loop constructs, not just printing out in standard output and it only took me couple of hours to write it. 
 
-It is harmless prepender virus and copies itself to the top of the infected program and infected program does 
+The virus is a harmless prepending virus which copies itself to the top of the infected program and infected program does 
 absolutley nothing harmful except printing a message that it is infected.
 The virus only infects [ELF](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format) 
 files which are present in current directory (not subdirectories) and smaller than 4KB in size to prevent any potential misuse.
