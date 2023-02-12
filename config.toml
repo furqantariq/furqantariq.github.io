@@ -14,9 +14,9 @@ googleAnalytics = "G-3SNBC5QD82"
     mainSection = "posts"
     mainSectionTitle = "Posts"
     showAllPostsOnHomePage = false
-    postsOnHomePage = 3
+    postsOnHomePage = 20
     tagsOverview = false
-    showProjectsList = true
+    showProjectsList = false
     projectsUrl = "https://github.com/furqantariq"
     mathjax = true
     
