@@ -1,7 +1,7 @@
 ---
 title: "Finding sum of even Fibonacci numbers" 
 date: 2022-09-20T20:34:25+02:00
-tags: [ "programming", "puzzles", "mathematics" ]
+tags: [ "mathematics", "puzzles" ]
 ---
 
 It's the problem from [Project Euler #2](https://projecteuler.net/problem=2), which I have [solved](https://github.com/furqantariq/Project-Euler/tree/master/p2) couple of years ago but never properly documented it. 
