@@ -40,6 +40,10 @@ googleAnalytics = "G-3SNBC5QD82"
 
 # social media links
 [[params.social]]
+    name = "twitter"
+    link = "https://twitter.com/kickflip_er
+
+[[params.social]]
     name = "github"
     link = "https://github.com/furqantariq"
 
