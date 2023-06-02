@@ -127,7 +127,7 @@ walk\text{-}v(\frac{\acute{y}}{\tan{\theta_i}}, \underbrace{y + \frac{\sin\theta
 $$
 {{</math>}}
 
-Now our intersection point will be sum of distance to nearby gridline point and walking further alongside ray, until it encounters object.
+Then our intersection points $H_{i_{x,y}}$ and $V_{i_{x,y}}$ will be
 
 $$ H_{i_{x,y}} = h_{i_{x,y}} + walk\text{-}h(h_{i_{x,y}}) $$
 $$ V_{i_{x,y}} = v_{i_{x,y}} + walk\text{-}v(v_{i_{x,y}}) $$
@@ -151,8 +151,8 @@ Although we have distance now but the distance is not correct and it is actually
 distance in drawing our scene, It will give an effect known as "fishbowl effect". The reason behind is because rays
 that are away from the player direction are actually longer then what their actual length is, as compare to the rays 
 that are closer to player direction and these longer rays give an illusion that object is farther away, hence the fishbowl
-effect. To fix that is quite simple, all we have to do is multiply distorted distance with sine of abosulte difference of
-ray angle and player direction.  
+effect. To fix that is quite simple, all we have to do is multiply distorted distance with cosine of abosulte difference of
+ray angle $\theta_i$ and player direction $P_\theta$.  
 
 {{<figure src="fishbowl-effect.svg" height="100%" width="100%">}}
 
