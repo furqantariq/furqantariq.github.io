@@ -136,11 +136,10 @@ $$ V_{i_{x,y}} = v_{i_{x,y}} + walk\text{-}v(v_{i_{x,y}}) $$
 
 {{<figure src="raytracing.svg" width="100%" height="100%" >}}
 
-
-After this we will have two **intersection points** on which ray is intersecting both vertically and horizontally 
-with a cell. Now we need to find distance between the player position and nearest **intersection point**.
-That can be done by taking euclidean distance between these two **intersection points** and the minimum of these two 
-distances will be our distance to nearest interseciton point. 
+Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
+will always be hidden behind. Unless we are applying texture, the point itself has no value but the distance for scene rendering. 
+By taking euclidean distance between player position $P_{x,y}$ and intersection points $H_{i_{x,y}}$ or $V_{i_{x,y}$, then 
+the minimum out of these two will be our distance to nearest intersection for $R_i$  
 
 $$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 - (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 - (P_y - V_{i_y})^2}) $$
 
