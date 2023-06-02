@@ -13,37 +13,54 @@ The problem states
 
 To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surrounded by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:     
 
-| Odd | Even | Odd | Odd | Even | Odd | Odd | Even | Odd | Odd | Even |.. |
-|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|---|
-| 1   | 2    | 3   | 5   | 8    | 13  | 21  | 34   | 55  | 89  | 144  |.. |
+| Even | Odd | Odd | Even | Odd | Odd | Even | Odd | Odd | Even | Odd | Odd | Even |.. |
+|:----:|:---:|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|:---:|:---:|:----:|---|
+| 0    | 1   | 1   | 2    | 3   | 5   | 8    | 13  | 21  | 34   | 55  | 89  | 144  |.. |
         
 \
 Mathematically it can be written in the form of [recursive relation](https://en.wikipedia.org/wiki/Recurrence_relation) $f$ where $ n $ is the $nth$ fibonacci number.      
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(odd)}(1) = 1 $      
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(even)}(2) = 2 $       
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(even)}(n) = f_{(odd)}(n-1) + f_{(odd)}(n-2) $       
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(odd)}(n) = f_{(even)}(n-1) + f_{(odd)}(n-2) \text{ or } f_{(odd)}(n-1) + f_{(even)}(n-2) $  
+{{<math>}}
+$$\begin{align} 
+f_{(odd)}(1) &= 1 \\[2ex]
+f_{(even)}(2) &= 2 \\[2ex]
+\end{align}$$
+{{</math>}}
+
+{{<math>}}
+$$\begin{align} 
+f_{(even)}(n) &= f_{(odd)}(n-1) + f_{(odd)}(n-2) \\[2ex]
+f_{(odd)}(n) &= f_{(even)}(n-1) + f_{(odd)}(n-2) \text{ or } f_{(odd)}(n-1) + f_{(even)}(n-2) \\[2ex]
+\end{align}$$
+{{</math>}}
 
 And then the next even number will be      
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(even)}(n+1) = f_{(odd)}(n) + f_{(odd)}(n-1) $       
+$$ f_{(even)}(n+1) = f_{(odd)}(n) + f_{(odd)}(n-1) $$       
 
 The above equation can also be desribed in terms of its relation with its predecessor even fibonacci number, that will save us some iterations in calculating sum. We can do this by expanding the $ f_{(odd)}(n-1) $.
 
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(even)}(n+1) = f_{(odd)}(n) + ( f_{(odd)}(n) - f_{(even)}(n-2)) $               
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(even)}(n+1) = 2 \times f_{(odd)}(n) - f_{(even)}(n-2) $               
+{{<math>}}
+$$\begin{align}
+f_{(even)}(n+1) &= f_{(odd)}(n) + ( f_{(odd)}(n) - f_{(even)}(n-2)) \\[2ex]               
+f_{(even)}(n+1) &= 2 \times f_{(odd)}(n) - f_{(even)}(n-2) \\[2ex]
+\end{align}$$               
+{{</math>}}
 
 From the above equation we have everything what we need to calculate sum except $ f_{(odd)}(n) $. Instead what we have is $ f_{(odd)}(n-3) $, that can be used to calculate $ f_{(odd)}(n) $ as shown below.      
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(odd)}(n) = f_{(odd)}(n-1) + f_{(even)}(n-2) $         
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(odd)}(n) = (f_{(even)}(n-2) + f_{(odd)}(n-3) ) + f_{(even)}(n-2) $        
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ f_{(odd)}(n) = 2 \times f_{(even)}(n-2) + f_{(odd)}(n-3) $        
+{{<math>}}
+$$\begin{align} 
+f_{(odd)}(n) &= f_{(odd)}(n-1) + f_{(even)}(n-2) \\[2ex]
+f_{(odd)}(n) &= (f_{(even)}(n-2) + f_{(odd)}(n-3) ) + f_{(even)}(n-2) \\[2ex]       
+f_{(odd)}(n) &= 2 \times f_{(even)}(n-2) + f_{(odd)}(n-3) \\[2ex]
+\end{align}$$
+{{</math>}}
+
 
 And now finally the summation will look like this  
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $ \sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = \sum_{n=2k+3}^{f(n+1)\le 4000000} 2 \times f(n) - f(n-3) $       
+$$ \sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = \sum_{n=2k+3}^{f(n+1)\le 4000000} 2 \times f(n) - f(n-3) $$       
 
 Here $n=2k+3$ means that $(n+1)th$ number will point to the position of even number in fibonacci sequeunce. *e.g.* 2, 5, 8, 10 ..   
 
@@ -87,4 +104,4 @@ print("sum=", sum)
 ```
 And the result is:         
           
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **$ \sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = 4613732 $**
+**$$ \sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = 4613732 $$**
