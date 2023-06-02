@@ -33,19 +33,20 @@ googleAnalytics = "G-3SNBC5QD82"
     weight = 2
 
 [[menu.main]]
+    name = "twitch clips"
+    url = "/twitch-clips"
+    weight = 3
+
+[[menu.main]]
     name = "tags"
     url = "/tags"
-    weight = 3
+    weight = 4
 
 
 # social media links
 [[params.social]]
     name = "twitter"
-    link = "https://twitter.com/kickflip_er"
-
-[[params.social]]
-    name = "github"
-    link = "https://github.com/furqantariq"
+    link = "https://twitter.com/cluelessguy10"
 
 [[params.social]]
     name = "youtube"

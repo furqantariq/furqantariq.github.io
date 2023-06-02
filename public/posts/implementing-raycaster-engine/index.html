@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <link rel="preload" href="/furqantariq.github.io/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/furqantariq.github.io/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/furqantariq.github.io/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/furqantariq.github.io/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <script type="text/javascript" src="https://latest.cactus.chat/cactus.js"></script>
+  <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Implementing Raycaster Engine | furqan&#39;s homepage</title>
+  <link rel = 'canonical' href = 'furqantariq.github.io/posts/implementing-raycaster-engine/'>
+  <meta name="description" content="furqan&#39;s homepage">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Implementing Raycaster Engine" />
+<meta property="og:description" content="Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensionsal (2D) data. Back in days, when gaming industry was in its nascency and computer were slow with limited memory, it was the efficient way to create scenes from player perspective. It gained prominence in games like Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games.
+Before delving into implementation of raycasting engine, we have to define our game world data in 2D-matrix in which each element corresponds to square tile in the game world with certain height and width." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="furqantariq.github.io/posts/implementing-raycaster-engine/" /><meta property="og:image" content="furqantariq.github.io/images/share.jpg"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-05-21T15:47:30+02:00" />
+<meta property="article:modified_time" content="2023-05-21T15:47:30+02:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="furqantariq.github.io/images/share.jpg"/>
+
+<meta name="twitter:title" content="Implementing Raycaster Engine"/>
+<meta name="twitter:description" content="Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensionsal (2D) data. Back in days, when gaming industry was in its nascency and computer were slow with limited memory, it was the efficient way to create scenes from player perspective. It gained prominence in games like Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games.
+Before delving into implementation of raycasting engine, we have to define our game world data in 2D-matrix in which each element corresponds to square tile in the game world with certain height and width."/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="/furqantariq.github.io/css/styles.7c754dee4bfc873743b12288cf94eadcfd3bee1f2cff5a106753b8047879ac5195c8d8ad90f6d73f12e9c841696c51a0abdeae8394e3eb3079f310f418ddf9ec.css" integrity="sha512-fHVN7kv8hzdDsSKIz5Tq3P077h8s/1oQZ1O4BHh5rFGVyNitkPbXPxLpyEFpbFGgq96ug5Tj6zB58xD0GN357A=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="furqantariq.github.io/images/favicon.ico" />
+
+  
+  
+  
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3SNBC5QD82"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-3SNBC5QD82', { 'anonymize_ip': false });
+}
+</script>
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+        <li><a href="furqantariq.github.io/">home</a></li>
+         
+        <li><a href="furqantariq.github.io/posts">posts</a></li>
+         
+        <li><a href="furqantariq.github.io/tags">tags</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" furqantariq.github.io/posts/valentines-day/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&text=Implementing%20Raycaster%20Engine" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&is_video=false&description=Implementing%20Raycaster%20Engine" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Implementing%20Raycaster%20Engine&body=Check out this article: furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&name=Implementing%20Raycaster%20Engine&description=Raycasting%20is%20a%20technique%20in%20Computer%20Graphics%20to%20create%20three-dimensional%20%283D%29%20perspective%20image%20from%20two-dimensionsal%20%282D%29%20data.%20Back%20in%20days%2c%20when%20gaming%20industry%20was%20in%20its%20nascency%20and%20computer%20were%20slow%20with%20limited%20memory%2c%20it%20was%20the%20efficient%20way%20to%20create%20scenes%20from%20player%20perspective.%20It%20gained%20prominence%20in%20games%20like%20Wolfenstein%203D%20and%20Doom%20which%20also%20happened%20to%20introduce%20the%20concept%20of%20first-person-shooter%20%28FPS%29%20games.%0aBefore%20delving%20into%20implementation%20of%20raycasting%20engine%2c%20we%20have%20to%20define%20our%20game%20world%20data%20in%202D-matrix%20in%20which%20each%20element%20corresponds%20to%20square%20tile%20in%20the%20game%20world%20with%20certain%20height%20and%20width." aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&t=Implementing%20Raycaster%20Engine" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents"></nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Implementing Raycaster Engine
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-05-21 15:47:30 &#43;0200 CEST" itemprop="datePublished">2023-05-21</time>
+          
+        </div>
+        
+        
+        
+        
+      </div>
+    </header>
+
+    
+    <div class="content" itemprop="articleBody">
+      <p>Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensionsal
+(2D) data. Back in days, when gaming industry was in its nascency and computer were slow with limited memory, it was the
+efficient way to create scenes from player perspective. It gained prominence in games like Wolfenstein 3D
+and Doom which also happened to introduce the concept of first-person-shooter (FPS) games.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/561sPCk6ByE" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<p>Before delving into implementation of raycasting engine, we have to define our game world data in 2D-matrix in which
+each element corresponds to square tile in the game world with certain height and width. The value &ldquo;<strong>1</strong>&rdquo; represents that
+this tile is a wall and &ldquo;<strong>0</strong>&rdquo; represents empty space where player can move. In the figure below, the player &ldquo;<strong>P</strong>&rdquo; is
+standing at fourth row and second column (zero-based indices) and he is looking toward wall with an direction angle of 90 degrees.
+The player also has a Field of View (FOV) angle that represents the total observable area that can be seen at once by
+player&rsquo;s eye.</p>
+<figure><img src="map.png" width="250" height="250"/>
+</figure>
+
+<p>We can write this programmatically as shown below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-typescript" data-lang="typescript"><span style="display:flex;"><span><span style="color:#75715e">// constants
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">TILE_SIZE</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">MAP_HEIGHT</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">MAP_WIDTH</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FOV</span> <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">PI</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2.0</span>  <span style="color:#75715e">// in radians, 90 degrees
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// game map from upside view
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">world_map</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>                 <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// player position in above matrix in terms of x,y  vector 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">player_position</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">2.0</span>, <span style="color:#ae81ff">4.0</span>]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">player_direction</span> <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">PI</span><span style="color:#f92672">/</span><span style="color:#ae81ff">2.0</span> <span style="color:#75715e">// in radians, 90 degrees 
+</span></span></span></code></pre></div>
+<p>At its core, raycasting works by projecting rays from players position across his field of view and tracing them to
+determine what they intersect with. The number of rays casted is exactly equal to the width of projected screen because each
+ray is responsible for drawing to its respective column of pixels in projected screen. After finding intersection points,
+the distance between the player position and each intersection point is calculated and based on that distance
+intersected object is drawn into respective column. If distance is greater the object appears smaller and bigger otherwise.</p>
+<p>To cast each ray, its angle is needed to be found first. Since we know that number of rays equal to the screen width,
+then the angle between two consective rays will be $ \text{field_of_view}/\text{screen_width} $</p>
+<p>So the <em>i</em>th ray angle would be:</p>
+<p>$ \theta_i = \text{player_direction} - \text{field_of_view}/2 + i * (\text{field_of_view}/\text{screen_width}) $</p>
+<p>For tracing ray, we can take one ray as an example which has an angle $ \phi $. To trace it, we start at player position
+and slowly increase $x$-component of the ray by <code>cell_size</code> and calculate corresponding $y$-component of ray. In each increment
+we test whether we hit the object or not (e.g <code>world_map[x/cell_size][y/cell_size] == 1 or 0?</code>). We continue this until
+we hit either wall or end of the map.</p>
+<p>For each iteration, the $x$-component will be</p>
+<p>$ hx_j = j * \text{cell_size} $</p>
+<p>and its corresponding $y$-component can be calculated by the fact that $ \tan(\theta)=\text{perpendicular}/\text{base} $</p>
+<p>$ hy_j = hx_j * \tan(\phi) $</p>
+<p>By fixing $x$-component will only give us <strong>intersection point</strong> on which ray intersect at horizontally with a cell and to get
+vertical <strong>intersection point</strong> we repeat same process but this time we increment $y$-component with <code>cell_size</code> and calculate
+its corresponding $x$-component.</p>
+<p>Similary as above, for each iteration $j$</p>
+<p>$ vy_j = j * \text{cell_size} $</p>
+<p>$ vx_j = vy_j / \tan(\phi) $</p>
+<p>After this we will have two <strong>intersection points</strong> on which ray is intersecting both vertically and horizontally
+with a cell. Now we need to find distance between the player position and nearest <strong>intersection point</strong>.
+That can be done by taking euclidean distance between these two <strong>intersection points</strong> and the minimum of these two
+distances will be our distance to nearest interseciton point.</p>
+<p>$ \text{distance} = \min(\sqrt{ (P_x - hx )^2 - (P_y - hy)^2} ,  \sqrt{ (P_x - vx )^2 - (P_y - vy)^2})  $</p>
+
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="furqantariq.github.io/">home</a></li>
+         
+          <li><a href="furqantariq.github.io/posts">posts</a></li>
+         
+          <li><a href="furqantariq.github.io/tags">tags</a></li>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents"></nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&text=Implementing%20Raycaster%20Engine" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&is_video=false&description=Implementing%20Raycaster%20Engine" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=Implementing%20Raycaster%20Engine&body=Check out this article: furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&title=Implementing%20Raycaster%20Engine" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&name=Implementing%20Raycaster%20Engine&description=Raycasting%20is%20a%20technique%20in%20Computer%20Graphics%20to%20create%20three-dimensional%20%283D%29%20perspective%20image%20from%20two-dimensionsal%20%282D%29%20data.%20Back%20in%20days%2c%20when%20gaming%20industry%20was%20in%20its%20nascency%20and%20computer%20were%20slow%20with%20limited%20memory%2c%20it%20was%20the%20efficient%20way%20to%20create%20scenes%20from%20player%20perspective.%20It%20gained%20prominence%20in%20games%20like%20Wolfenstein%203D%20and%20Doom%20which%20also%20happened%20to%20introduce%20the%20concept%20of%20first-person-shooter%20%28FPS%29%20games.%0aBefore%20delving%20into%20implementation%20of%20raycasting%20engine%2c%20we%20have%20to%20define%20our%20game%20world%20data%20in%202D-matrix%20in%20which%20each%20element%20corresponds%20to%20square%20tile%20in%20the%20game%20world%20with%20certain%20height%20and%20width." aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=furqantariq.github.io%2fposts%2fimplementing-raycaster-engine%2f&t=Implementing%20Raycaster%20Engine" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2023  Furqan Tariq 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+        <li><a href="furqantariq.github.io/">home</a></li>
+         
+        <li><a href="furqantariq.github.io/posts">posts</a></li>
+         
+        <li><a href="furqantariq.github.io/tags">tags</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/furqantariq.github.io/js/code-copy.js></script>
+
+
+
+  
+
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+</html>
