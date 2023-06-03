@@ -1,7 +1,7 @@
 ---
-title: "An ELF x64 Virus in fasm assembly"
+title: "ELF x64 Virus in fasm assembly"
 date: 2022-10-16T12:47:18+02:00
-tags: ["programming", "assembly", "viruses"]
+tags: ["assembly", "viruses"]
 ---
 
 Recently, I was playing around with [flat assembler](https://flatassembler.net/) and i needed something to
