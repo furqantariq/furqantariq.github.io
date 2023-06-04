@@ -1,14 +1,16 @@
 ---
 title: "Twitch Clips"
 ---
+# Twitch clips 
 
-
-## Got ambushed by many trolls and abomination
+## Trollpocalypse
+We were minding our business when suddenly, we got ambushed by four [trolls](https://valheim.fandom.com/wiki/Troll) -- a miniboss in valheim, which is like, never happens. 
+And then, out of nowhere, another [miniboss](https://valheim.fandom.com/wiki/Abomination) spawned and they start fighting each other. 😂
 {{<twitch video="1698531849">}}
 
-## Got hit by troll in a boat
+## Our Boat Didn't Stand a Chance!
 {{<twitch video="1000557240">}}
 
-## Saving Sniper
+## Saving sniper
 {{<twitch video="1186907962">}}
 
