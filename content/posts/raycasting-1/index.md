@@ -10,7 +10,9 @@ draft: true
 Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional 
 (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, 
 it was one of the efficient ways to create scenes from a player's perspective. It gained prominence in games like 
-Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games.
+[Wolfenstein 3D](https://en.wikipedia.org/wiki/Wolfenstein_3D) and [Doom](https://en.wikipedia.org/wiki/Doom_(franchise))
+which also happened to introduce the concept of [first-person-shooter](https://en.wikipedia.org/wiki/First-person_shooter) 
+(FPS) games.
 
 
 {{< youtube 561sPCk6ByE >}}
@@ -25,7 +27,7 @@ each element corresponds to square cell in the game world with a height, width a
 The value "**1**" represents that this cell is a wall and "**0**" represents an empty space where player can move. 
 In the figure below, the player $P$ is standing at $x=2.5, y=0.5$ position and he is looking toward wall with an 
 direction angle $P_\theta$ of 90 degrees. The fraction part of the position indicates that player is standing in the middle of cell. 
-The player also has a Field of View (FOV) angle that represents the total observable area that can be seen at once by 
+The player also has a [Field of View](https://en.wikipedia.org/wiki/Field_of_view) (FOV) angle that represents the total observable area that can be seen at once by 
 player's eye.  
 
 {{<math>}}
@@ -71,7 +73,7 @@ $$ \theta_i = (P_\theta + \frac{FOV}{2}) - i\cdot(\frac{FOV}{\textit{screen-widt
 The tracing of rays involves finding all the horizontal and vertical gridlines of the map that particular ray $R_i$
 falls on. On each horizontal gridline we check whether next horizontal cell infront of ray is wall or not and on 
 each vertical gridline we check the same but with vertical cells. If we encounter any cell or wall then 
-we stop at that point and that point is our intersection point $V_{i_{x,y}}$ or $H_{i_{x,y}}$ for ray $R_i$. During tracing, If we dont encounter any object and 
+we stop at that point and that point is our intersection point $V_{i_{x,y}}$ or $H_{i_{x,y}}$ for ray $R_i$. During tracing, if we dont encounter any object and 
 reach end of the map then we consider our distance to be infinite.
 
 
@@ -103,7 +105,8 @@ $$
 {{</math>}}
 
 After finding initial gridline points, now its time to move to the next gridline points along the ray $R_i$.
-For this, we can a define a recursive function $\textit{next-grid}(x,y)$ that jumps to next gridline point by adding $\textit{cellsize}$
+For this, we can a define a [recursive](https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:sequences/x2f8bb11595b61c86:constructing-arithmetic-sequences/a/writing-recursive-formulas-for-arithmetic-sequences)
+function $\textit{next-grid}(x,y)$ that jumps to next gridline point by adding $\textit{cellsize}$
 to the respective component and stops when it encounters an object.
 
 
@@ -145,7 +148,7 @@ where $h_{i_{x,y}}$ and $v_{i_{x,y}}$ are nearby gridline points for any $R_i$
 Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
 will always be hidden behind. The intersection point itself has no value for us unless we are applying textures, 
 but we are interested in the distance to nearest intersection point. This can be found by taking minimum of the 
-Euclidean distances from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$
+[Euclidean distances](https://en.wikipedia.org/wiki/Euclidean_distance) from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$
 
 $$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 + (P_y - V_{i_y})^2}) $$
 
@@ -153,7 +156,7 @@ $$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (
 ### Fixing Fisheye-Lens
 
 Although we have distance now but the distance is not correct and it is actually slightly distorted. If we use this
-distance in drawing our scene, It will give an effect known as "fisheye effect". The reason behind is because the rays
+distance in drawing our scene, It will give an effect known as ["fisheye effect"](https://en.wikipedia.org/wiki/Fisheye_lens). The reason behind is because the rays
 that are away from the player direction are actually longer in length then the rays that are parallel to player direction
 and these longer rays give an illusion that object is farther away, hence the fisheye
 effect. To fix that is quite simple, all we have to do is multiply distorted distance with cosine of abosulte difference of
@@ -169,7 +172,7 @@ The purpose of finding distance to object was to find out the projected height o
 established earlier that everything player see is of same height. Now if we look at the figure below,
 the actual object lies at distance $\overline{OF}$ away from player $P$ with height $\overline{AB}$ and the line $\overline{XY}$ 
 represents the projected height of the object in projection screen, that also lies at certain distance $\overline{OD}$ 
-away from player $P$ in same direction. This gives us two similar triangles $ \triangle AOB $ and $ \triangle XOY $ with 
+away from player $P$ in same direction. This gives us two [similar triangles](https://byjus.com/maths/similar-triangles/) $ \triangle AOB $ and $ \triangle XOY $ with 
 equal angles that means the ratios of their corresponding sides are equal.
 
 {{<figure src="triangles.svg" height="100%" width="100%">}}
