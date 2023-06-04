@@ -147,7 +147,7 @@ where $h_{i_{x,y}}$ and $v_{i_{x,y}}$ are nearby gridline points for any $R_i$
 Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
 will always be hidden behind. The intersection point itself has no value for us unless we are applying textures, 
 but we are interested in the distance to nearest intersection point. This can be found by taking minimum of the 
-[Euclidean distances](https://en.wikipedia.org/wiki/Euclidean_distance) from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$
+[euclidean distances](https://en.wikipedia.org/wiki/Euclidean_distance) from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$
 
 $$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 + (P_y - V_{i_y})^2}) $$
 
