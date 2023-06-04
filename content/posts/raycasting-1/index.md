@@ -1,5 +1,5 @@
 ---
-title: "Raycasting (part-1)"
+title: "Raycasting - part 1"
 date: 2023-05-21T15:47:30+02:00
 tags: ["computer-graphics"]
 draft: true
@@ -91,7 +91,7 @@ h_y &= h_x\cdot\tan\theta_i \\
 $$
 {{</math>}}
 
-similarly for vertical,
+similarly for vertical gridlines,
 
 {{<math>}}
 $$
@@ -129,21 +129,23 @@ $$
 $$
 {{</math>}}
 
+The pictorial form of ray-object intersection can also be seen below.
+
 {{<figure src="raytracing.svg" height="100%" width="100%">}}
 
 
-Then the intersection points $H_{i_{x,y}}$ and $V_{i_{x,y}}$ will be
+So the intersection points $H_{i_{x,y}}$ and $V_{i_{x,y}}$ that intersects ray will be 
 
-$$ H_{i_{x,y}} = h_{i_{x,y}} + \textit{next-grid-h}(h_{i_{x,y}}) $$
-$$ V_{i_{x,y}} = v_{i_{x,y}} + \textit{next-grid-v}(v_{i_{x,y}}) $$
+$$ H_{i_{x,y}} = \textit{next-grid-h}(h_{i_{x,y}}) $$
+$$ V_{i_{x,y}} = \textit{next-grid-v}(v_{i_{x,y}}) $$
 
-where $h_{i_{x,y}}$ and $v_{i_{x,y}}$ are nearby gridline points for ray $R_{i}$
+where $h_{i_{x,y}}$ and $v_{i_{x,y}}$ are nearby gridline points for any $R_i$ 
 
 
 Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
-will always be hidden behind. The point has no value for us unless we are applying textures, 
-and the distance is what we are looking after that the is minimum distance from player position $P_{x,y}$ to both these points
-$H$ and $V$
+will always be hidden behind. The intersection point itself has no value for us unless we are applying textures, 
+but we are interested in the distance to nearest intersection point. This can be found by taking minimum of the 
+Euclidean distances from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$
 
 $$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 + (P_y - V_{i_y})^2}) $$
 
@@ -197,7 +199,12 @@ object visibility from 2D data, the demonstration of which can be seen below.
 
 # DEMO
 
-{{< jsfiddle "furqantariq/364w95pt" >}}
+Use **W**,**A**,**S** and **D** keys to update $P_{x,y}$ and modify $P_\theta$ with mouse pointer.
+
+Readers are encouraged to open 'Typescript' tab and to experiment with different colors, `WORLD_MAP` variable and various
+other configurable variables.
+
+{{<codepen src="https://codepen.io/furqant/embed/XWPRyYv?default-tab=result&editable=true&theme-id=light" height="570">}}
 
 *This blogpost will be divided into two parts and in next part i will write about applying textures and implementing 
 weather effects (fog, night and day) using raycasting*
