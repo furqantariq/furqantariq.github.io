@@ -1,6 +1,6 @@
 ---
 title: "Raycasting - part 1"
-date: 2023-05-29T18:47:30+02:00
+date: 2023-06-04T20:47:30+02:00
 tags: ["computer-graphics"]
 ---
 
