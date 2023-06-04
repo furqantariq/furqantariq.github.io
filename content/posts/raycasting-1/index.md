@@ -206,7 +206,7 @@ Use **W**,**A**,**S** and **D** keys to update $P_{x,y}$ and modify $P_\theta$ w
 Readers are encouraged to open 'Typescript' tab and to experiment with different colors, `WORLD_MAP` variable and various
 other configurable variables.
 
-{{<codepen src="https://codepen.io/furqant/embed/XWPRyYv?default-tab=result&editable=true&theme-id=light" height="570">}}
+{{<codepen>}}
 
 *This blogpost will be divided into two parts and in next part i will write about applying textures and implementing 
 weather effects (fog, night and day) using raycasting*
