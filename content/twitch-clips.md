@@ -11,6 +11,6 @@ And then, out of nowhere, another [miniboss](https://valheim.fandom.com/wiki/Abo
 ## Our Boat Didn't Stand a Chance!
 {{<twitch video="1000557240">}}
 
-## Saving sniper
+## The Heroic Sniper Savior
 {{<twitch video="1186907962">}}
 
