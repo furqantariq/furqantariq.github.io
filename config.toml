@@ -10,7 +10,7 @@ googleAnalytics = "G-3SNBC5QD82"
 [params]
     colortheme = "light"
     description = "furqan's homepage"
-    images = ["images/share.jpg"]
+    images = ["images/share.gif"]
     mainSection = "posts"
     mainSectionTitle = "Posts"
     showAllPostsOnHomePage = false
