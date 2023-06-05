@@ -11,7 +11,7 @@ rituals, and prophecies, and that it is going through some kind of 'bad phase' o
 However, I believe Islam encompasses much more than that and addresses additional aspects. Although its religious philosophies 
 are not significantly different from other Abrahamic religions, Islam intersects more extensively with the political and social realms.
 
-Unlike its counterparts, most of the conflicts and sectarian divisions in Islam are not stem from by theological differences 
+Unlike its counterparts, most of the conflicts and sectarian divisions in Islam are not stem from theological differences 
 but by real-world political and social crises, such as power struggles, succession disputes, civil wars, and more.
 The martial elements it possesses are not just a "bug" but they are there by design.
 
