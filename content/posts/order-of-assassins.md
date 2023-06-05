@@ -16,5 +16,5 @@ but from real-world political and social crises, such as power struggles, succes
 The martial elements it possesses are not just a "bug" but they are there by design.
 
 One could argue that Islam is a 
-religion that embodies these political, social, and cultural values, but I consider it more as a socio-political framework 
+religion that embodies these political, social, and cultural values, but I consider Islam more as a socio-political framework 
 that encompasses theological ideology.
