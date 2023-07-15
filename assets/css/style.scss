@@ -6,11 +6,11 @@
   "minima/skins/{{ site.minima.skin | default: 'classic' }}",
   "minima/initialize";
 
-//.site-title::before {
-//  content: url("/assets/img/nav.png");
-//  display: inline-block;
-//  position: relative;
-//  margin-right: 5px;
-//  top: 6px;
-//  right: 10px;
-//}
+.site-title::before {
+  content: url("/assets/img/nav.png");
+  display: inline-block;
+  position: relative;
+  margin-right: 5px;
+  top: 6px;
+  right: 10px;
+}
