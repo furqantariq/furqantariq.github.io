@@ -3,6 +3,7 @@ layout: post
 title: "Raycasting - part 1"
 date: 2023-06-04T20:47:30+02:00
 tags: ["computer-graphics"]
+usemathjax: true
 ---
 
 ## Introduction
