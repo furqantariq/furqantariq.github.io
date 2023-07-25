@@ -19,14 +19,15 @@
 # in the templates via {{ site.myvariable }}.
 
 title: amoebatron
-author: "Furqan"
-email: furqantariq@outlook.com
+author: ""
+email: ""
 description: >- # this means to ignore newlines until "baseurl:"
   personal blog
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://furqantariq.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-
 google_analytics: G-3SNBC5QD82
+markdown: kramdown
+
 
 header_pages:
   - twitch.md
