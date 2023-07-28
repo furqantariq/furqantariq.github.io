@@ -6,8 +6,6 @@ tags: ["computer-graphics"]
 usemathjax: true
 ---
 
-## Introduction
-
 Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional 
 (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, 
 it was one of the efficient ways to create scenes from a player's perspective. It gained prominence in games like 
@@ -18,8 +16,6 @@ which also happened to introduce the concept of [first-person-shooter](https://e
 <center>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/561sPCk6ByE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </center>
-
-## Raycasting Algorithm
 
 ### Data Representation
 
@@ -196,7 +192,7 @@ In the end, after rendering process, we will have a 2D image that represents a 3
 object visibility from 2D data, the demonstration of which can be seen below.
 
 
-# Demo
+## Demo
 
 Use **W**,**A**,**S** and **D** keys to update \\( P_{x,y} \\) and modify \\( P_\theta \\) with mouse pointer.
 
