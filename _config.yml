@@ -31,6 +31,13 @@ url: "https://furqantariq.github.io" # the base hostname & protocol for your sit
 google_analytics: G-3SNBC5QD82
 markdown: kramdown
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: /assets/images/default-share.gif
+
+
 header_pages:
   - twitch.md
   - about.md
