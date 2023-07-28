@@ -35,7 +35,7 @@ defaults:
   - scope:
       path: ""
     values:
-      image: /assets/images/default-share.gif
+      image: /assets/images/share.gif
 
 
 header_pages:
