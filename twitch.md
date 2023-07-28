@@ -46,7 +46,7 @@ And then, out of nowhere, another [miniboss](https://valheim.fandom.com/wiki/Abo
         </iframe>
 </div>
 
-## The Heroic Sniper Save
+## The Sniper Save
 
 <div class="twitch-clips" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
         <iframe
