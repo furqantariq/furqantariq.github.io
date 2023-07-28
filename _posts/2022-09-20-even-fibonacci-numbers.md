@@ -13,14 +13,14 @@ The problem states
 >By considering the terms in the Fibonacci sequence whose values do not exceed four million, find the sum of the even-valued terms.
 
 
-To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surrounded by two consecutive odd numbers and positioned at $ 2k+3 $ for any $k$ in a sequence as shown below:     
+To solve this problem, the pattern of the even numbers in fibonacci sequence need to be understood first. Since the first two numbers of fibonacci sequeunce are odd and even number, so the both third and fourth numbers will be odd numbers because summation of an even and odd number will always be an odd number. After that, these two odd numbers will be resulted in an even number and sequene will go on. In other words, it can be said that each even number will always be surrounded by two consecutive odd numbers and positioned at \\(2k+3\\) for any \\(k\\) in a sequence as shown below:     
 
 | O | O | E | O | O | E | O | O | E | O | O | E |.. |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | 1 | 1 | 2 | 3 | 5 | 8 |13 |21 |34 |55 |89 |144|.. |
 
 \
-Mathematically it can be written in the form of [recursive relation](https://en.wikipedia.org/wiki/Recurrence_relation) $f$ where $ n $ is the $nth$ fibonacci number.      
+Mathematically it can be written in the form of [recursive relation](https://en.wikipedia.org/wiki/Recurrence_relation) \\( f \\) where \\( n \\) is the \\( nth \\) fibonacci number.      
 
 
 $$\begin{align} 
@@ -38,14 +38,14 @@ And then the next even number will be
 
 $$ f_{(even)}(n+1) = f_{(odd)}(n) + f_{(odd)}(n-1) $$       
 
-The above equation can also be desribed in terms of its relation with its predecessor even fibonacci number, that will save us some iterations in calculating sum. We can do this by expanding the $ f_{(odd)}(n-1) $.
+The above equation can also be desribed in terms of its relation with its predecessor even fibonacci number, that will save us some iterations in calculating sum. We can do this by expanding the \\( f_{(odd)}(n-1) \\).
 
 $$\begin{align}
 f_{(even)}(n+1) &= f_{(odd)}(n) + ( f_{(odd)}(n) - f_{(even)}(n-2)) \\[2ex]               
 f_{(even)}(n+1) &= 2 \times f_{(odd)}(n) - f_{(even)}(n-2) \\[2ex]
 \end{align}$$               
 
-From the above equation we have everything what we need to calculate sum except $ f_{(odd)}(n) $. Instead what we have is $ f_{(odd)}(n-3) $, that can be used to calculate $ f_{(odd)}(n) $ as shown below.      
+From the above equation we have everything what we need to calculate sum except \\( f_{(odd)}(n) \\). Instead what we have is \\( f_{(odd)}(n-3) \\), that can be used to calculate \\( f_{(odd)}(n) \\) as shown below.      
 
 $$\begin{align} 
 f_{(odd)}(n) &= f_{(odd)}(n-1) + f_{(even)}(n-2) \\[2ex]
@@ -58,24 +58,24 @@ And now finally the summation will look like this
 
 $$ \sum_{n=2k+3}^{f(n+1)\le 4000000} f(n+1) = \sum_{n=2k+3}^{f(n+1)\le 4000000} 2 \times f(n) - f(n-3) $$       
 
-Here $n=2k+3$ means that $(n+1)th$ number will point to the position of even number in fibonacci sequeunce. *e.g.* 2, 5, 8, 10 ..   
+Here \\( n=2k+3 \\) means that \\( (n+1)th \\) number will point to the position of even number in fibonacci sequeunce. *e.g.* 2, 5, 8, 10 ..   
 
 Lets calculate the first three even fibonacci numbers to test our equations       
 
 
-| $k$ | $n$ | $f(n)$ odd number | 
+| \\( k \\) | \\( n \\) | \\( f(n) \\) odd number | 
 |:-:|:-:|:-:|
-| - | - | $f(1) = 1 $ *(base)* |
-| 1 | 4 | $f(4)=2 \times f(2) + f(1) = (2 \times 2) + 1 = 5 $ |
-| 2 | 7 | $f(7)=2 \times f(5) + f(4) = (2 \times 8) + 5 = 21 $ |
-| 3 | 9 | $f(9)=2 \times f(8) + f(7) = (2 \times 34) + 21 = 89 $ |
+| - | - | \\( f(1) = 1 \\) *(base)* |
+| 1 | 4 | \\( f(4)=2 \times f(2) + f(1) = (2 \times 2) + 1 = 5 \\) |
+| 2 | 7 | \\( f(7)=2 \times f(5) + f(4) = (2 \times 8) + 5 = 21 \\) |
+| 3 | 9 | \\( f(9)=2 \times f(8) + f(7) = (2 \times 34) + 21 = 89 \\) |
                
-| $k$ | $n$ | $f(n+1)$ even number |
+| \\( k \\) | \\( n \\) | \\( f(n+1) \\) even number |
 |:-:|:-:|:-:|
-| - | - | $ f(2) = 2 $ *(base)* |
-| 1 | 4 | $ f(5)=2 \times f(4) - f(2) = (2 \times 5) - 2 = 8 $ |
-| 2 | 7 | $ f(8)=2 \times f(7) - f(5) = (2 \times 21) - 8 = 34 $ |
-| 3 | 9 | $ f(10)=2 \times f(9) - f(8) = (2 \times 89) - 34 = 144 $ |
+| - | - | \\( f(2) = 2 \\) *(base)* |
+| 1 | 4 | \\( f(5)=2 \times f(4) - f(2) = (2 \times 5) - 2 = 8 \\) |
+| 2 | 7 | \\( f(8)=2 \times f(7) - f(5) = (2 \times 21) - 8 = 34 \\) |
+| 3 | 9 | \\( f(10)=2 \times f(9) - f(8) = (2 \times 89) - 34 = 144 \\) |
          
 
 \
