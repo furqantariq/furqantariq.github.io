@@ -18,16 +18,18 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: amoebatron
-author: ""
-email: ""
+title: "furqan"
+
+author:
+  name: "Furqan T."
+  email: "furqantariq@outlook.com"
+
 description: >- # this means to ignore newlines until "baseurl:"
-  personal blog
+  blog
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://furqantariq.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 google_analytics: G-3SNBC5QD82
 markdown: kramdown
-
 
 header_pages:
   - twitch.md
@@ -37,6 +39,13 @@ header_pages:
 theme: minima
 plugins:
   - jekyll-feed
+
+minima:
+  social_links:
+     - { platform: twitch,  user_url: "https://twitch.tv/amoebatron" }
+     - { platform: steam,  user_url: "https://steamcommunity.com/id/furqan" }
+     - { platform: twitter,  user_url: "https://twitter.com/amoebatron" }
+     - { platform: youtube,  user_url: "https://youtube.com/@amoebatron" }
 
 
 # Exclude from processing.

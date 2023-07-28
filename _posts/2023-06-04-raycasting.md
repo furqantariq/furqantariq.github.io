@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Raycasting - part 1"
+title: "Raycasting"
 date: 2023-06-04T20:47:30+02:00
 tags: ["computer-graphics"]
 usemathjax: true
@@ -24,10 +24,10 @@ which also happened to introduce the concept of [first-person-shooter](https://e
 ### Data Representation
 
 Before delving into implementation of raycasting, we have to define our game world data in 2D-matrix in which 
-each element corresponds to square cell in the game world with a height, width and breadth of $\textit{cellsize}$. 
+each element corresponds to square cell in the game world with a height, width and breadth of \\(\textit{cellsize}\\). 
 The value "**1**" represents that this cell is a wall and "**0**" represents an empty space where player can move. 
-In the figure below, the player $P$ is standing at $x=2.5, y=0.5$ position and he is looking toward wall with an 
-direction angle $P_\theta$ of 90 degrees. The fraction part of the position indicates that player is standing in the middle of cell. 
+In the figure below, the player \\(P\\) is standing at \\(x=2.5, y=0.5\\) position and he is looking toward wall with an 
+direction angle \\(P_\theta\\) of 90 degrees. The fraction part of the position indicates that player is standing in the middle of cell. 
 The player also has a [Field of View](https://en.wikipedia.org/wiki/Field_of_view) (FOV) angle that represents the total observable area that can be seen at once by 
 player's eye.
 
@@ -67,7 +67,7 @@ while those farther away will appear smaller, simulating depth perception.
 Each ray $R_i$ originates from the player position $P_{x,y}$ with an angle $\theta_i$ and before casting rays, 
 their angles must be determined first. Since we know that number of rays are equal to the screen width, 
 then the angle between two consective rays will be $ \frac{FOV}{\textit{screen-width}} $ and left most ray $R_0$ will have an angle
-$ \theta_0 = P_\theta + \frac{FOV}{2} $ so the angle of $i$th ray would be
+\\( \theta_0 = P_\theta + \frac{FOV}{2} \\) so the angle of $i$th ray would be
 
 
 $$ \theta_i = (P_\theta + \frac{FOV}{2}) - i\cdot(\frac{FOV}{\textit{screen-width}}) $$
@@ -209,5 +209,3 @@ other configurable variables.
   on <a href="https://codepen.io">CodePen</a>.
 </iframe></center>
 
-*This blogpost will be divided into two parts and in next part i will write about applying textures and implementing 
-weather effects (fog, night and day) using raycasting*

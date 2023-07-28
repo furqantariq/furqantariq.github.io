@@ -1,14 +1,15 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
 ---
 
-@import "minima";
+@import
+  "minima/skins/{{ site.minima.skin | default: 'classic' }}",
+  "minima/initialize";
 
 .site-title::before {
-  content: url("/assets/img/nav.png");
+  content: url("/assets/images/logo.gif");
   display: inline-block;
   position: relative;
   margin-right: 5px;
   top: 6px;
-  right: 10px;
+  right: 5px;
 }
