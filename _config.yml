@@ -51,8 +51,9 @@ minima:
   social_links:
      - { platform: twitch,  user_url: "https://twitch.tv/amoebatron" }
      - { platform: steam,  user_url: "https://steamcommunity.com/id/furqan" }
-     - { platform: twitter,  user_url: "https://twitter.com/amoebatron" }
-     - { platform: youtube,  user_url: "https://youtube.com/@amoebatron" }
+     - { platform: youtube,  user_url: "https://youtube.com/@furqantq" }
+     - { platform: strava,  user_url: "https://www.strava.com/athletes/120590510" }
+     - { platform: instagram,  user_url: "https://instagram.com/furqantq" }
 
 
 # Exclude from processing.
