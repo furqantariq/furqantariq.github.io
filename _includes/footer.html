@@ -2,11 +2,14 @@
     <data class="u-url" href="{{ "/" | relative_url }}"></data>
   
     <div class="wrapper">
-        {% if site.author.name -%}
-            <span class="p-name">{{ site.author.name | escape }}</span> |
-        {% endif -%}
-        <span> Please find me </span>        
-  
+        <div class="footer-col-wrapper">
+            <div class="footer-col">
+                {% if site.author.name -%}
+                    <span class="p-name">{{ site.author.name | escape }}</span> |
+                {% endif -%}
+                <span> Please find me </span>        
+            </div>
+        </div>
     </div>
   
   </footer>
