@@ -21,7 +21,7 @@
 title: "furqan"
 
 author:
-  name: "Furqan"
+  name: "Furqan Tariq"
   email: "furqantariq@outlook.com"
 
 description: >- # this means to ignore newlines until "baseurl:"
@@ -44,6 +44,12 @@ header_pages:
 # Build settings
 theme: minima
 
+plugins:
+#  - jekyll-feed
+  - jekyll-seo-tag
+
+minima:
+  skin: classic
 
 # Exclude from processing.
 # The following items will not be processed, by default.
