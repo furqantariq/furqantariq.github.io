@@ -1,0 +1,5 @@
+<footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; {{ now.Format "2006" }} {{ if .Site.Copyright }} {{ print .Site.Copyright | markdownify }} {{ else }} {{ print .Site.Title }} {{ end }}
+  </div>
+</footer>

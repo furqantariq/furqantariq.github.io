@@ -1,0 +1,50 @@
+baseURL = 'https://furqantariq.github.io/'
+languageCode = 'en-us'
+title = 'furqan'
+
+[params]
+description = "Hi there, "
+showAllPostsOnHomePage = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+
+[[params.social]]
+  name = "twitch"
+  link = "https://www.twitch.tv/amoebatron"
+
+[[params.social]]
+  name = "youtube"
+  link = "https://www.youtube.com/@furqantq"
+
+[[params.social]]
+  name = "steam"
+  link = "https://steamcommunity.com/id/furqan"
+
+[[params.social]]
+  name = "github"
+  link = "https://github.com/furqantariq"
+
+
+
+
+[[menu.main]]
+name = "home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "posts"
+url = "/posts"
+weight = 2
+
+[[menu.main]]
+name = "twitch"
+url = "/twitch"
+weight = 3

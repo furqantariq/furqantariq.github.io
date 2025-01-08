@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Raycasting | furqan</title>
+  <link rel = 'canonical' href = 'http://localhost:1313/posts/raycasting/'>
+  <meta name="description" content="Hi there, ">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="Raycasting" />
+<meta property="og:description" content="Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, it was one of the efficient ways to create scenes from a player&rsquo;s perspective. It gained prominence in games like Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/raycasting/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-06-04T20:47:30+02:00" />
+<meta property="article:modified_time" content="2023-06-04T20:47:30+02:00" />
+
+
+  <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Raycasting"/>
+<meta name="twitter:description" content="Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, it was one of the efficient ways to create scenes from a player&rsquo;s perspective. It gained prominence in games like Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games."/>
+
+  
+  
+  
+  <link rel="stylesheet" href="http://localhost:1313/css/styles.94f653e9e151e28067a7c5dbbc4600cbd5a3c721e79faaf971e523c40f3b249b8e4f20bb57810dfffa8d559ca5c140fd56eb4cd9c0853113ad08e66afdb08bdd.css" integrity="sha512-lPZT6eFR4oBnp8XbvEYAy9WjxyHnn6r5ceUjxA87JJuOTyC7V4EN//qNVZylwUD9VutM2cCFMROtCOZq/bCL3Q=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="http://localhost:1313/images/favicon.ico" />
+
+  
+  
+  
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
+      inlineMath: [['\\(', '\\)']]                  
+    }
+  };
+</script>
+  
+
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+    <header id="header">
+  <a href="http://localhost:1313/">
+  
+    <div id="logo" style="background-image: url(http://localhost:1313/images/logo.png)"></div>
+  
+  <div id="title">
+    <h1>furqan</h1>
+  </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fas fa-bars fa-2x" aria-hidden="true"></i></a>
+      </li>
+      
+        <li><a href="/">home</a></li>
+      
+        <li><a href="/posts">posts</a></li>
+      
+        <li><a href="/twitch">twitch</a></li>
+      
+    </ul>
+  </div>
+</header>
+
+
+
+    
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        Raycasting
+      </h1>
+      <div class="meta">
+        <div class="postdate">
+          
+          <time datetime="2023-06-04 20:47:30 &#43;0200 CEST" itemprop="datePublished">2023-06-04</time>
+          
+        </div>
+      </div>
+    </header>
+
+    
+    <div class="content" itemprop="articleBody">
+      <p>Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional
+(2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory,
+it was one of the efficient ways to create scenes from a player&rsquo;s perspective. It gained prominence in games like
+<a href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a> and <a href="https://en.wikipedia.org/wiki/Doom_(franchise)">Doom</a>
+which also happened to introduce the concept of <a href="https://en.wikipedia.org/wiki/First-person_shooter">first-person-shooter</a>
+(FPS) games.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/561sPCk6ByE" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h3 id="data-representation">Data Representation</h3>
+<p>Before delving into implementation of raycasting, we have to define our game world data in 2D-matrix in which
+each element corresponds to square cell in the game world with a height, width and breadth of \( \textit{cellsize} \).
+The value &ldquo;<strong>1</strong>&rdquo; represents that this cell is a wall and &ldquo;<strong>0</strong>&rdquo; represents an empty space where player can move.
+In the figure below, the player \(P\) is standing at \( x=2.5, y=0.5 \) position and he is looking toward wall with an
+direction angle \( P_\theta \) of 90 degrees. The fraction part of the position indicates that player is standing in the middle of cell.
+The player also has a <a href="https://en.wikipedia.org/wiki/Field_of_view">Field of View</a> (FOV) angle that represents the total observable area that can be seen at once by
+player&rsquo;s eye.</p>
+$$
+    map (x, y) = 
+    \begin{bmatrix}
+        0 & 0 & 1 & 0 & 0 \\ 
+        1 & 1 & 0 & 1 & 1 \\
+        0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 \\
+    \end{bmatrix}
+$$
+$$ FOV = 70^\circ $$
+$$ P_{x,y} = (2.5, 0.5), P_\theta = 90^\circ $$
+<figure><img src="map.svg" width="65%" height="65%"/>
+</figure>
+
+<h3 id="casting-rays">Casting Rays</h3>
+<p>In principle, raycasting works by projecting rays from players position across his field of view and tracing them to
+the point where they intersect with wall, object or nothing. The number of rays that are casted are equal to the width
+of the screen because each ray is responsible for drawing to its respective column of pixels in the projected screen.
+After finding intersection points, the distance between the player position and each intersection point is calculated and
+based on that distance object or wall is drawn into respective column. Objects that are closer to the camera will appear larger,
+while those farther away will appear smaller, simulating depth perception.</p>
+<p><figure><img src="rays.svg" width="100%" height="100%"/>
+</figure>
+
+<figure><img src="perspective.svg" width="100%" height="100%"/>
+</figure>
+</p>
+<h3 id="ray-object-intersection">Ray-Object intersection</h3>
+<p>Each ray \( R_i \) originates from the player position \( P_{x,y} \) with an angle \( \theta_i \) and before casting rays,
+their angles must be determined first. Since we know that number of rays are equal to the screen width,
+then the angle between two consective rays will be \( \frac{FOV}{\textit{screen-width}} \) and left most ray \( R_0 \) will have an angle
+\( \theta_0 = P_\theta + \frac{FOV}{2} \) so the angle of \( ith \) ray would be</p>
+$$ \theta_i = (P_\theta + \frac{FOV}{2}) - i\cdot(\frac{FOV}{\textit{screen-width}}) $$
+<p>The tracing of rays involves finding all the horizontal and vertical gridlines of the map that particular ray  \( R_i \)
+falls on. On each horizontal gridline we check whether next horizontal cell infront of ray is wall or not and on
+each vertical gridline we check the same but with vertical cells. If we encounter any cell or wall then
+we stop at that point and that point is our intersection point \( V_{i_{x,y}} \) or \( H_{i_{x,y}} \) for ray \( R_i \). During tracing, if we dont encounter any object and
+reach end of the map then we consider our distance to be infinite.</p>
+<p>Since player \( P_{x,y} \) standing somewhere inside the cell, so we have to find the nearby horizontal \( h_{i_{x,y}} \) and
+vertical \( v_{i_{x,y}} \) gridline and that we can find by taking difference between \( \textit{cellsize} \) and player position
+\( P_{x,y} \), depending on the direction of the ray \( R_i \) (i.e. we have to move backward if \( \theta_i \ge 180^\circ \) ).
+The directional part can easily be fixed by just multiplying it with sign value of \( \cos\theta_i \) (in case of horizontal) and \( \sin\theta_i \) (in case of vertical).</p>
+<p>The corresponding component can be calculated by the trigonometric ratio \( \tan\theta = \frac{\text{perpendicular}}{\text{base}} \).</p>
+$$ 
+\begin{align}
+h_x &= \frac{\cos\theta_i}{|\cos\theta_i|}\cdot(cellsize - P_x) \\[2ex] 
+h_y &= h_x\cdot\tan\theta_i \\ 
+\end{align}
+$$
+<p>similarly for vertical gridlines,</p>
+$$
+\begin{align}
+v_y &= \frac{\sin\theta_i}{|\sin\theta_i|}\cdot(cellsize-P_y)\\[2ex] 
+v_x &= \frac{v_y}{\tan\theta_i} \\
+\end{align}
+$$
+<p>After finding initial gridline points, now its time to move to the next gridline points along the ray \( R_i \).
+For this, we can a define a <a href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:sequences/x2f8bb11595b61c86:constructing-arithmetic-sequences/a/writing-recursive-formulas-for-arithmetic-sequences">recursive</a>
+function \( \textit{next-grid}(x,y) \) that jumps to next gridline point by adding \( \textit{cellsize} \)
+to the respective component and stops when it encounters an object.</p>
+$$
+\textit{next-grid-h} (x, y) = 
+\begin{cases}
+(x, y), & \textit{if map$( \lfloor\frac{x}{cellsize}\rfloor + \frac{\cos\theta_i}{|\cos\theta_i|}, \lfloor\frac{y}{cellsize}\rfloor) = 1$} \\[2ex]
+\textit{next-grid-h}(\underbrace{x + \frac{\cos\theta_i}{|\cos\theta_i|}\cdot cellsize}_\acute{x}, \acute{x}\cdot\tan\theta_i), & \text{else} \\
+\end{cases}
+$$
+<p>similarly,</p>
+$$
+\textit{next-grid-v}(x,y) = 
+\begin{cases}
+(x, y), &\textit{if map$( \lfloor\frac{x}{cellsize}\rfloor, \lfloor\frac{y}{cell size}\rfloor  + \frac{\sin\theta_i}{|\sin\theta_i|}),= 1$} \\[2ex]
+\textit{next-grid-v}(\frac{\acute{y}}{\tan{\theta_i}}, \underbrace{y + \frac{\sin\theta_i}{|\sin\theta_i|}\cdot cellsize}_{\acute{y}}), & \textit{else} \\
+\end{cases}
+$$
+<p>The pictorial form of ray-object intersection can also be seen below.</p>
+<figure><img src="raytracing.svg" width="100%" height="100%"/>
+</figure>
+
+<p>So the intersection points \( H_{i_{x,y}} \) and \( V_{i_{x,y}} \) that intersects ray will be</p>
+$$ H_{i_{x,y}} = \textit{next-grid-h}(h_{i_{x,y}}) $$
+$$ V_{i_{x,y}} = \textit{next-grid-v}(v_{i_{x,y}}) $$
+<p>where \( h_{i_{x,y}} \) and \( v_{i_{x,y}} \) are nearby gridline points for any \( R_i \)</p>
+<p>Between these two intersection points, only the nearest point will be used in scene rendering because the farthest point
+will always be hidden behind. The intersection point itself has no value for us unless we are applying textures,
+but we are interested in the distance to nearest intersection point. This can be found by taking minimum of the
+<a href="https://en.wikipedia.org/wiki/Euclidean_distance">euclidean distances</a> from player position \( P_{x,y} \) to both of these points \( H_{x,y} \) and \( V_{x,y} \)</p>
+$$ \acute{d_i} = \min(\sqrt{ (P_x - H_{i_x} )^2 + (P_y - H_{i_y})^2} ,  \sqrt{ (P_x - V_{i_x} )^2 + (P_y - V_{i_y})^2}) $$
+<h3 id="fixing-fisheye-lens">Fixing Fisheye-Lens</h3>
+<p>Although we have distance now but the distance is not correct and it is actually slightly distorted. If we use this
+distance in drawing our scene, It will give an effect known as <a href="https://en.wikipedia.org/wiki/Fisheye_lens">&ldquo;fisheye effect&rdquo;</a>. The reason behind is because the rays
+that are away from the player direction are actually longer in length then the rays that are parallel to player direction
+and these longer rays give an illusion that object is farther away, hence the fisheye
+effect. To fix that is quite simple, all we have to do is multiply distorted distance with cosine of abosulte difference of
+ray angle \( \theta_i \) and player direction \( P_\theta \).</p>
+<figure><img src="fishbowl-effect.svg" width="100%" height="100%"/>
+</figure>
+
+$$ d_i = \acute{d_i} \cdot \cos(|\theta_i-P_\theta|) $$
+<h3 id="projection">Projection</h3>
+<p>The purpose of finding distance to object was to find out the projected height of the object. We have already
+established earlier that everything player see is of same height. Now if we look at the figure below,
+the actual object lies at distance \( \overline{OF} \) away from player \( P \) with height \( \overline{AB} \) and the line \( \overline{XY} \)
+represents the projected height of the object in projection screen, that also lies at certain distance \( \overline{OD} \)
+away from player \( P \) in same direction. This gives us two <a href="https://byjus.com/maths/similar-triangles/">similar triangles</a> \( \triangle AOB \) and \( \triangle XOY \) with
+equal angles that means the ratios of their corresponding sides are equal.</p>
+<figure><img src="triangles.svg" width="100%" height="100%"/>
+</figure>
+
+$$ \triangle AOB \sim \triangle XOY$$
+$$ \frac{\overline{XY}}{\overline{AB}} = \frac{\overline{DO}}{\overline{FO}} $$
+<p>Since \( \overline{AB} \) is \( \textit{cellsize} \), \( \overline{FO} \) is the distance we calculated earler and \( \overline{OD} \) is
+upto us to decide how much away projection screen from player \( P \) should be, that leave us \( \overline{XY} \) which is
+the projected height \(h_i\) of the object with which the ray \(R_i\) intersects.</p>
+$$ h_i = \frac{cellsize}{d_i} \cdot \textit{projection-distance} $$
+<h3 id="rendering-scene">Rendering Scene</h3>
+<p>To render final scene, raycasting uses column-based rendering. In which we iterates through each column \( c_i \) in screen
+and at the center of the pixel column, we fills all corresponding pixels with color of object that intersects with ray \( R_i \)
+at the calculated projected height \( h_i \). In each iteration, rest of the pixels are filled with environment color
+e.g. sky, floor &hellip; etc.</p>
+<figure><img src="rendering.svg" width="100%" height="100%"/>
+</figure>
+
+<p>In the end, after rendering process, we will have a 2D image that represents a 3D scene with illusion of depth and
+object visibility from 2D data, the demonstration of which can be seen below.</p>
+<h2 id="demo">Demo</h2>
+<p>Use <strong>W</strong>,<strong>A</strong>,<strong>S</strong> and <strong>D</strong> keys to update \( P_{x,y} \) and modify \( P_\theta \) with mouse pointer.</p>
+<p>Readers are encouraged to open &lsquo;Typescript&rsquo; tab and to experiment with different colors, <code>WORLD_MAP</code> variable and various
+other configurable variables.</p>
+<!-- raw HTML omitted -->
+
+    </div>
+  </article>
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2025  furqan 
+  </div>
+</footer>
+
+
+
+
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2025  furqan 
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+</html>

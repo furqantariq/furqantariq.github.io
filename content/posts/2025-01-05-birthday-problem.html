@@ -1,0 +1,185 @@
+---
+title: 'Simulating Birthday Problem'
+date: 2025-01-05T13:00:43+01:00
+url: 'posts/birthday-problem'
+---
+
+<p>
+Birthday Problem is one of those problem in probability that seem counterintuitive at first glance but is backed by elegant mathematical reasoning, proving it otherwise.
+It demonstrates that in a group of just 23 people, there's a 50% chance of at least two individuals sharing a birthday.
+</p>   
+ 
+<p>
+At first glance, this result feels surprising. I have been part of numerous gatherings or groups with 23 or more people, yet I rarely encounter shared birthdays.
+So intrigued by this, I decided to create a simulator to understand it visually
+</p>
+
+<p>
+The simulator below takes number of trials and on each trial it generates 23 persons and assign them random birthdays. Using this data, it produces a graph that shows the cumulative probability across all trials and remarkably it converges to 50%. 
+</p><p>
+It also creates a heatmap to provide further insights where  rows represent trials and columns represent days of the year. The color coding is as follows: green pixel <span style="color:green">&#9608</span> for no birthdays, yellow pixel <span style="color:yellow">&#9608</span> for single birthdays, and red pixel <span style="color:red">&#9608</span> for shared birthdays. 
+</P>
+
+<div style="margin-top: 2em">
+  <label for="numTrials">Enter number of trials (N): </label>
+  <input type="number" id="numTrials" min="1" max="10000" value="1000" />
+  <button onclick="simulateBirthdayProblem()">Run Simulation</button>
+
+  <canvas id="visualization" width="800" height="400"></canvas>
+  <div id="birthdays"></div>
+  <canvas id="heatmap" width="800"></canvas>
+
+  <script>
+    function simulateBirthdayProblem() {
+      const numTrials = parseInt(document.getElementById("numTrials").value);
+      const numPeople = 23; // Fixed number of people
+      const results = [];
+      let sharedBirthdayCount = 0;
+
+      // Prepare data for heatmap
+      const heatmapData = Array.from({ length: numTrials }, () =>
+        Array(365).fill(0),
+      );
+
+      for (let i = 1; i <= numTrials; i++) {
+        const trialResult = simulateTrial(numPeople, heatmapData[i - 1]);
+        if (trialResult) {
+          sharedBirthdayCount++;
+        }
+        const probability = (sharedBirthdayCount / i) * 100;
+        results.push({ trial: i, probability });
+      }
+
+      visualizeResults(results);
+      drawHeatmap(heatmapData);
+    }
+
+    function simulateTrial(numPeople, heatmapRow) {
+      const birthdays = new Set();
+      let hasDuplicate = false;
+
+      for (let i = 0; i < numPeople; i++) {
+        const birthday = Math.floor(Math.random() * 365); // Random day of the year (0-364)
+        heatmapRow[birthday] += 1; // Mark the heatmap for this birthday
+        if (birthdays.has(birthday)) {
+          hasDuplicate = true;
+        }
+        birthdays.add(birthday);
+      }
+
+      return hasDuplicate;
+    }
+
+    function visualizeResults(data) {
+      const canvas = document.getElementById("visualization");
+      const ctx = canvas.getContext("2d");
+
+      // Clear the canvas
+      ctx.fillStyle = "#f0f0f0";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Set up graph dimensions
+      const width = canvas.width - 100;
+      const height = canvas.height - 100;
+      const offsetX = 50;
+      const offsetY = 50;
+
+      // Draw axes
+      ctx.beginPath();
+      ctx.moveTo(offsetX, offsetY);
+      ctx.lineTo(offsetX, height + offsetY);
+      ctx.lineTo(width + offsetX, height + offsetY);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Label axes
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "#000000";
+      ctx.fillText("0%", offsetX - 30, height + offsetY);
+      ctx.fillText("100%", offsetX - 40, offsetY);
+      ctx.fillText("Trials", width + offsetX - 30, height + offsetY + 30);
+
+      // Plot data
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      data.forEach((point, index) => {
+        const x = offsetX + (point.trial / data.length) * width;
+        const y = height + offsetY - (point.probability / 100) * height;
+
+        if (index === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+
+      ctx.stroke();
+
+      // Add text above the graph line
+      const text = `accumulative probability = ${data[data.length - 1].probability.toFixed(2)}%`;
+      const textX = offsetX + width / 2 - ctx.measureText(text).width / 2; // Center the text
+      const textY = offsetY - 20; // Position above the graph
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+      ctx.fillText(text, textX, textY);
+    }
+
+
+    function drawHeatmap(data) {
+      const canvas = document.getElementById("heatmap");
+      const ctx = canvas.getContext("2d");
+
+      // Set up dimensions
+      const trialCount = data.length;
+      const dayCount = data[0].length;
+      const cellSize = canvas.width / dayCount;
+      canvas.height = cellSize * trialCount;
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw heatmap
+      for (let trial = 0; trial < trialCount; trial++) {
+        for (let day = 0; day < dayCount; day++) {
+          const value = data[trial][day];
+          if (value >= 2) ctx.fillStyle = "red";
+          else if (value == 1) ctx.fillStyle = "yellow";
+          else ctx.fillStyle = "green";
+          ctx.fillRect(day * cellSize, trial * cellSize, cellSize, cellSize);
+        }
+      }
+
+      canvas.addEventListener('mousemove', function (event) {
+        const rect = canvas.getBoundingClientRect();
+        const y = event.clientY - rect.top;
+        const trialIndex = Math.floor(y / (canvas.height / data.length));
+	const trial = data[trialIndex]
+	var birthdays = ""
+	for(var i=0;i<trial.length; ++i)
+	{
+	   if(trial[i]!=0)
+	   {
+		const date = new Date(1970, 0, i);
+		if(trial[i]==1)
+		birthdays += `<span>${date.toLocaleDateString('en-US', {day: 'numeric', month: 'short'})}</span>, `
+		else
+		birthdays += `<span style='color:red;'>${date.toLocaleDateString('en-US', {day: 'numeric', month: 'short'})}(${trial[i]} times)</span>, `
+
+	   }
+	}
+      
+        // Get the birthday of the specific trial and day
+        const birthdayElement = document.getElementById("birthdays");
+        birthdayElement.innerHTML = `Birthdays(Trial# ${trialIndex + 1}): ${birthdays}`;
+      });
+    }
+
+
+  </script>
+</div>
+
+
+

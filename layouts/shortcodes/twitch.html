@@ -1,0 +1,47 @@
+{{- /*
+Renders an embedded twitch video and clips.
+
+@param {string} [id] Id of the video, collection or channel name.
+@param {string} [type=video] Whether content is video, collection or channel.
+@param {int} [height=720] The height of the content.
+@param {int} [width=1280] The width of the content.
+@param {bool} [muted=false] Whether to mute the content.
+@param {bool} [allowFullScreen=true] Whether the iframe element can activate full screen mode.
+
+@returns {template.HTML}
+
+@reference https://dev.twitch.tv/docs/embed/video-and-clips/
+
+*/}}
+
+{{- with $id := or (.Get "id") (.Get 0) }}
+{{- $parentURL := absURL "/" | urls.Parse }}
+
+  {{- /* Set defaults. */}}
+    {{- $type := "video" }}
+    {{- $height := 720 }}
+    {{- $width := 1280 }}
+    {{- $autoplay := false }}
+    {{- $muted := false }}
+    {{- $allowFullScreen := true }}
+  
+  {{- /* Get arguments. */}}
+
+
+  {{- $src := printf "https://player.twitch.tv/?%s=%s&parent=%s&autoplay=%t&muted=%t" $type $id $parentURL.Hostname $autoplay $muted }}
+
+  {{- /* Render. */}}
+
+<div class="shortcode shortcode--twitch shortcode--video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+	<iframe
+		style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+        	{{- with $src }} src="{{ . }}" {{- end }}
+		frameborder="0"
+		scrolling="no"
+		{{- with $height }} height="{{ . }}" {{- end }}
+		{{- with $width }} width="{{ . }}" {{- end }}
+		{{- with $allowFullScreen }} allowfullscreen="{{ . }}"  {{- end }}
+	>
+	</iframe>
+</div>
+{{- end }}

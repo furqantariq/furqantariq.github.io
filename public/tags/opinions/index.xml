@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Opinions on furqan</title>
+    <link>http://localhost:1313/tags/opinions/</link>
+    <description>Recent content in Opinions on furqan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 29 Mar 2023 23:40:31 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/opinions/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hashashins and Islam</title>
+      <link>http://localhost:1313/posts/hashashins-and-islam/</link>
+      <pubDate>Wed, 29 Mar 2023 23:40:31 +0200</pubDate>
+      <guid>http://localhost:1313/posts/hashashins-and-islam/</guid>
+      <description>I always tell people that Islam is a very different religion from others. Normally religions consisits of ethics, beliefs, rituals, prophecies and philosophies, but Islam ecompasses much more that and addresses additional aspects as well. Although its religious philosophies are not significantly different from other Abrahamic religions (especiialy judaism), but Islam intersects more extensively with the political and social realms.&#xA;Unlike its counterparts, in Islam most of the conflicts and sectarian divisions are not stem from theological differences but from real-world political and social crises, such as power struggles, succession disputes, civil wars, and more.</description>
+    </item>
+  </channel>
+</rss>

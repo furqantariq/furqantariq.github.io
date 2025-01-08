@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Computer-Graphics on furqan</title>
+    <link>http://localhost:1313/tags/computer-graphics/</link>
+    <description>Recent content in Computer-Graphics on furqan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Jun 2023 20:47:30 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/computer-graphics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Raycasting</title>
+      <link>http://localhost:1313/posts/raycasting/</link>
+      <pubDate>Sun, 04 Jun 2023 20:47:30 +0200</pubDate>
+      <guid>http://localhost:1313/posts/raycasting/</guid>
+      <description>Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, it was one of the efficient ways to create scenes from a player&amp;rsquo;s perspective. It gained prominence in games like Wolfenstein 3D and Doom which also happened to introduce the concept of first-person-shooter (FPS) games.</description>
+    </item>
+  </channel>
+</rss>

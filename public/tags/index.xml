@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on furqan</title>
+    <link>http://localhost:1313/tags/</link>
+    <description>Recent content in Tags on furqan</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Jun 2023 20:47:30 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Computer-Graphics</title>
+      <link>http://localhost:1313/tags/computer-graphics/</link>
+      <pubDate>Sun, 04 Jun 2023 20:47:30 +0200</pubDate>
+      <guid>http://localhost:1313/tags/computer-graphics/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Assembly</title>
+      <link>http://localhost:1313/tags/assembly/</link>
+      <pubDate>Sun, 16 Oct 2022 12:47:18 +0200</pubDate>
+      <guid>http://localhost:1313/tags/assembly/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Viruses</title>
+      <link>http://localhost:1313/tags/viruses/</link>
+      <pubDate>Sun, 16 Oct 2022 12:47:18 +0200</pubDate>
+      <guid>http://localhost:1313/tags/viruses/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Mathematics</title>
+      <link>http://localhost:1313/tags/mathematics/</link>
+      <pubDate>Tue, 20 Sep 2022 20:34:25 +0200</pubDate>
+      <guid>http://localhost:1313/tags/mathematics/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Puzzles</title>
+      <link>http://localhost:1313/tags/puzzles/</link>
+      <pubDate>Tue, 20 Sep 2022 20:34:25 +0200</pubDate>
+      <guid>http://localhost:1313/tags/puzzles/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
