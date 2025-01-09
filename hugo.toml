@@ -2,6 +2,8 @@ baseURL = 'https://furqantariq.github.io/'
 languageCode = 'en-us'
 title = 'furqan'
 
+theme = 'cactus'
+
 [params]
 description = "Hi there, "
 showAllPostsOnHomePage = true
