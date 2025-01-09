@@ -11,8 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
-  {{ template "_internal/opengraph.html" . }}
-  {{ template "_internal/twitter_cards.html" . }}
+
   {{ .Scratch.Set "colortheme" "white"}}
   {{ if .Site.Params.Colortheme }}
     {{ .Scratch.Set "colortheme" .Site.Params.Colortheme }}
@@ -33,20 +32,14 @@
   ` | safeHTML }}
 
   {{ partial "favicon.html" . }}
-  {{ if .Site.Params.rss }}
-  {{ with .OutputFormats.Get "RSS" }}
-    {{ printf `<link href="%s" rel="%s" type="%s" title="%s" />` .Permalink .Rel .MediaType.Type $.Site.Title | safeHTML }}
-  {{ end }}
-  {{ end }}
-  {{ if .Site.GoogleAnalytics }}
-  {{ if .Site.Params.googleAnalyticsAsync }}
-    {{ template "_internal/google_analytics_async.html" . }}
-  {{ else }}
-    {{ template "_internal/google_analytics.html" . }}
-  {{ end }}
-  {{ end }}
   {{ if .Param "math" }}
     {{ partialCached "math.html" . }}
   {{ end }}
+
+  {{- if hugo.IsProduction | or (eq site.Params.env "production") }}
+    {{- template "_internal/google_analytics.html" . }}
+    {{- template "partials/templates/opengraph.html" . }}
+    {{- template "partials/templates/twitter_cards.html" . }}
+  {{- end -}}
 
 </head>
