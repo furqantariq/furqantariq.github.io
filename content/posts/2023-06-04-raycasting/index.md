@@ -1,10 +1,10 @@
----
-title: 'Raycasting'
-date: 2023-06-04T20:47:30+02:00
-tags: ["computer-graphics"]
-url: 'posts/raycasting'
-math: true
----
++++
+title = 'Raycasting'
+date = 2023-06-04T20:47:30+02:00
+tags = ["computer-graphics"]
+url = 'posts/raycasting'
+math = true
++++
 
 Raycasting is a technique in Computer Graphics to create three-dimensional (3D) perspective image from two-dimensional 
 (2D) data. Back in the days, when game development was in its nascency and computer were slow with limited memory, 

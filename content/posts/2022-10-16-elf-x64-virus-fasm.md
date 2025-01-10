@@ -1,9 +1,9 @@
----
-title: 'ELF x64 Virus in fasm assembly'
-date: 2022-10-16T12:47:18+02:00
-tags: ["assembly", "viruses"]
-url: 'posts/elf-x64-virus-fasm'
----
++++
+title = 'ELF x64 Virus in fasm assembly'
+date = 2022-10-16T12:47:18+02:00
+tags = ["assembly", "viruses"]
+url = 'posts/elf-x64-virus-fasm'
++++
 
 Recently, I was playing around with [flat assembler](https://flatassembler.net/) and i needed something to
 write in it. I tried ["Hello world" program](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program) but it was not
