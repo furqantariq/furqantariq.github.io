@@ -1,6 +1,7 @@
 baseURL = 'https://furqantariq.github.io/'
 languageCode = 'en-us'
 title = 'furqan'
+author = "Furqan"
 
 theme = 'cactus'
 

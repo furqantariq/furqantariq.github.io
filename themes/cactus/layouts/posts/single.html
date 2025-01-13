@@ -13,8 +13,12 @@
           {{ end }}
         </div>
       </div>
+    {{ with .Resources.GetMatch "cover.webp" }}
+      <div class="postcover">
+	<img src="{{ .RelPermalink }}" >
+      </div>
+    {{ end }}
     </header>
-
     {{ if .Site.Params.tocInline }}
     <div id="toc">
       {{ .TableOfContents }}
