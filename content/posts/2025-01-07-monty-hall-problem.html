@@ -5,7 +5,7 @@ url = 'posts/monty-hall-problem'
 +++
 
 <p>
-While working on simulating the <a href="{{< ref "/2025-01-05-birthday-problem.html" >}}" target="blank" >Birthday problem</a>, I already knew what I was going to do next: apply the same approach to the <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem" target="blank">Monty Hall problem</a>. This problem is even more bizarre than the birthday problem.
+While working on simulating the <a href="{{< ref "/2025-01-05-birthday-problem.html" >}}">Birthday problem</a>, I already knew what I was going to do next: apply the same approach to the <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem" target="blank">Monty Hall problem</a>. This problem is even more bizarre than the birthday problem.
 </p>
 <p>
 It is based on a classic TV game show. The setup is straightforward: a player is presented with three doors, one hiding a car and the other two hiding goats. The player initially picks one door. Then, the host, who knows what’s behind each door, reveals a goat behind one of the two unchosen doors. At this point, the player is given a choice: stick with their original door or switch to the other unopened door.
@@ -14,11 +14,11 @@ It is based on a classic TV game show. The setup is straightforward: a player is
 At first glance, it might seem like the probability of winning the car is 1/3, regardless of the player's choice. However, if the player switches to the other door, the probability apparently jumps to 2/3. Yes, switching actually doubles your chances of winning. Its also probably better described <a href="https://www.youtube.com/watch?v=CYyUuIXzGgI&t=75s" target="blank">here</a>
 </p>
 <p>
-Just like my previous blog post, I wrote another script to simulate the Monty Hall problem with N samples. The script creates two players who play the games N times. One player always sticks with their initial choice of door, while the other player alwaus switches their choice after the host reveals a goat. The script then plat average cumulative probabilities of both strategies on a graph. And surprisingly (or perhaps unsurprisingly) the probabilities for the "keep" and "switch" strategies converge to 1/3 (33.33%) and 2/3 (66.66%) respectively over a large sample set. 
+Just like my previous blog post, I've written another script to simulate the Monty Hall problem with N trials. The script creates two players who play the games N times. One player always sticks with their initial door choice, while the other player always switches their choice after the host reveals a goat. The script then plats the average cumulative probabilities of both strategies on a graph. And interestingly the probabilities for the "keep" and "switch" strategies converge to 1/3 (33.33%) and 2/3 (66.66%), respectively, as the sample size increases. 
 </P>
 
 <div style="margin-top: 2em">
-  <label for="trials">Number of Samples (N):</label>
+  <label for="trials">Number of trials (N):</label>
   <input type="number" id="trials" min="1" value="1000">
   <button onclick="runSimulation()">Run Simulation</button>
   <br/><br/>
