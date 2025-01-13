@@ -5,7 +5,7 @@ title = 'furqan'
 theme = 'cactus'
 
 [params]
-description = "Hi there, "
+description = ""
 showAllPostsOnHomePage = true
 
 [markup]
@@ -17,36 +17,14 @@ showAllPostsOnHomePage = true
           block = [['\[', '\]'], ['$$', '$$']]
           inline = [['\(', '\)']]
 
-[[params.social]]
-  name = "twitch"
-  link = "https://www.twitch.tv/amoebatron"
-
-[[params.social]]
-  name = "youtube"
-  link = "https://www.youtube.com/@furqantq"
-
-[[params.social]]
-  name = "steam"
-  link = "https://steamcommunity.com/id/furqan"
-
-[[params.social]]
-  name = "github"
-  link = "https://github.com/furqantariq"
-
-
 
 
 [[menu.main]]
-name = "home"
+name = "blog"
 url = "/"
 weight = 1
 
 [[menu.main]]
-name = "posts"
-url = "/posts"
-weight = 2
-
-[[menu.main]]
 name = "twitch"
 url = "/twitch"
-weight = 3
+weight = 2
