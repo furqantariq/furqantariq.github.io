@@ -5,8 +5,13 @@ title = 'furqan'
 theme = 'cactus'
 
 [params]
-description = ""
+description = "Hi there,"
 showAllPostsOnHomePage = true
+
+
+[services]
+  [services.googleAnalytics]
+    id = 'G-3SNBC5QD82'
 
 [markup]
   [markup.goldmark]
