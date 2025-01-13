@@ -1,168 +1,278 @@
 +++
-title = 'Simulating Monty Hall Problem'
+title = 'Monty Hall Problem'
 date = 2025-01-07T18:36:43+01:00
 url = 'posts/monty-hall-problem'
-draft = true
 +++
 
 <p>
+While working on simulating the <a href="{{< ref "/2025-01-05-birthday-problem.html" >}}" target="blank" >Birthday problem</a>, I already knew what I was going to do next: apply the same approach to the <a href="https://en.wikipedia.org/wiki/Monty_Hall_problem" target="blank">Monty Hall problem</a>. This problem is even more bizarre than the birthday problem.
+</p>
+<p>
+It is based on a classic TV game show. The setup is straightforward: a player is presented with three doors, one hiding a car and the other two hiding goats. The player initially picks one door. Then, the host, who knows what’s behind each door, reveals a goat behind one of the two unchosen doors. At this point, the player is given a choice: stick with their original door or switch to the other unopened door.
+</p>
+<p>
+At first glance, it might seem like the probability of winning the car is 1/3, regardless of the player's choice. However, if the player switches to the other door, the probability apparently jumps to 2/3. Yes, switching actually doubles your chances of winning. Its also probably better described <a href="https://www.youtube.com/watch?v=CYyUuIXzGgI&t=75s" target="blank">here</a>
+</p>
+<p>
+Just like my previous blog post, I wrote another script to simulate the Monty Hall problem with N samples. The script creates two players who play the games N times. One player always sticks with their initial choice of door, while the other player alwaus switches their choice after the host reveals a goat. The script then plat average cumulative probabilities of both strategies on a graph. And surprisingly (or perhaps unsurprisingly) the probabilities for the "keep" and "switch" strategies converge to 1/3 (33.33%) and 2/3 (66.66%) respectively over a large sample set. 
 </P>
 
 <div style="margin-top: 2em">
-    <label for="numTrials">Enter number of trials:</label>
-    <input type="number" id="numTrials" min="1" value="10">
-    <button onclick="runSimulation()">Run Simulation</button>
+  <label for="trials">Number of Samples (N):</label>
+  <input type="number" id="trials" min="1" value="100">
+  <button onclick="runSimulation()">Run Simulation</button>
+  <br/><br/>
+  <canvas id="graph" width="800" height="400"></canvas>
+  <div id="info" style="height: 7em" hidden>
+    <p>
+      <span style="color: #e0115f; font-weight: bold;">Red circle</span>: The door host revealed a goat.<br>
+      <span style="color: #0984e3; font-weight: bold;">Blue circle</span>: Player's final pick and dotted circle are player's first pick.<br>
+      <span style="color: orange; font-weight: bold;">Sample #<span id="trial"></span></span>: <span id="trial-data">Hover over the trials below.</span></p>
+  </div>
+  <canvas id="montyCanvas"></canvas>
 
-        <canvas id="chart" width="800" height="400"></canvas>
-        <canvas id="doorCanvas"></canvas>
+  <script>
+    function runSimulation() {
+      const trials = parseInt(document.getElementById('trials').value);
+      if (isNaN(trials) || trials < 1) {
+        return;
+      }
 
-    <script>
-        function runSimulation() {
-            const numTrials = parseInt(document.getElementById('numTrials').value);
-            if (isNaN(numTrials) || numTrials <= 0) {
-                return;
-            }
+      const canvas = document.getElementById('montyCanvas');
+      const ctx = canvas.getContext('2d');
+      const cellSize = 50;
+      const columns = 6;
+      const columnGap = 20;
 
-            const canvas = document.getElementById('doorCanvas');
-            const ctx = canvas.getContext('2d');
+      canvas.width = cellSize * columns + columnGap;
+      canvas.height = cellSize * (trials + 2); // Adjusted for headings
 
-            const cellSize = 20;
-            const numDoors = 3;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            canvas.width = numDoors * cellSize;
-            canvas.height = numTrials * cellSize;
+      const drawHeading = () => {
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'black';
 
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Draw Keep heading
+        ctx.fillText("Keep", cellSize * 1.5, 50);
 
-            let keepWins = 0;
-            let switchWins = 0;
+        // Draw Switch heading
+        ctx.fillText("Switch", cellSize * 4.5 + columnGap, 50);
+      };
 
-            const keepProbabilities = [];
-            const switchProbabilities = [];
+      const drawCell = (x, y, content, highlightColor = null, dotted = false) => {
+        const offsetX = x * cellSize + (x >= 3 ? columnGap : 0);
+        const offsetY = y * cellSize + 70;
 
-            for (let trial = 0; trial < numTrials; trial++) {
-                const keepResult = simulateTrial(numDoors);
-                const switchResult = simulateTrial(numDoors);
-                if (keepResult.isWin) keepWins++;
-                if (switchResult.isWin) switchWins++;
+        // Draw cell border
+        ctx.strokeStyle = '#ddd';
+        ctx.strokeRect(offsetX, offsetY, cellSize, cellSize);
 
-		for (let i = 0; i < 2*numDoors+2; i++) {
-                	const x = i * cellSize;
-                	const y = trial * cellSize;
+        // Draw content
+        ctx.font = '20px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(content, offsetX + cellSize / 2, offsetY + cellSize / 2);
 
-                	ctx.fillStyle = i === playerChoice ? '#ffcccc' : i === revealedDoor ? '#ffffcc' : '#f0f0f0';
-                	ctx.fillRect(x, y, cellSize, cellSize);
-                	ctx.strokeStyle = '#ccc';
-                	ctx.strokeRect(x, y, cellSize, cellSize);
-
-                	ctx.font = `${cellSize - 10}px Arial`;
-                	ctx.textAlign = 'center';
-                	ctx.textBaseline = 'middle';
-                	ctx.fillText(doors[i], x + cellSize / 2, y + cellSize / 2);
-            	}
-
-            	// Draw outcome in the rightmost column
-            	const outcomeX = doors.length * cellSize + 10;
-            	ctx.fillStyle = 'black';
-            	ctx.font = '16px Arial';
-            	ctx.textAlign = 'left';
-            	ctx.fillText(isWin ? 'Win' : 'Lose', outcomeX, trial * cellSize + cellSize / 2);
-
-                drawRow(ctx, trial, keepResult.doors, keepResult.playerChoice, keepResult.revealedDoor, keepResult.isWin);
-                drawRow(ctx, trial, switchResult.doors, switchResult.playerChoice, switchResult.revealedDoor, switchResult.isWin);
-
-                keepProbabilities.push(keepWins / (trial + 1));
-                switchProbabilities.push(switchWins / (trial + 1));
-            }
-
-            drawChart(keepProbabilities, switchProbabilities);
+        // Draw highlight if needed
+        if (highlightColor) {
+          ctx.strokeStyle = highlightColor;
+          ctx.lineWidth = 2;
+	  if(dotted) ctx.setLineDash([3, 3]) 
+	  else ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(
+            offsetX + cellSize / 2,
+            offsetY + cellSize / 2,
+            cellSize / 2 - 4,
+            0,
+            Math.PI * 2
+          );
+          ctx.stroke();
+          ctx.lineWidth = 1;
         }
+      };
 
-        function simulateTrial(numDoors) {
-            const carDoor = Math.floor(Math.random() * numDoors);
-            const playerChoice = Math.floor(Math.random() * numDoors);
+      const simulateMontyHall = (switchStrategy) => {
+        const doors = ['🚗', '🐐', '🐐'];
+        const results = [];
+        let wins = 0;
 
-            const doors = Array(numDoors).fill('🐐');
-            doors[carDoor] = '🚗';
+        for (let i = 1; i <= trials; i++) {
+          const shuffledDoors = [...doors].sort(() => Math.random() - 0.5);
+          let userPick = Math.floor(Math.random() * 3);
+	  let userFirstPick = userPick;
 
-            let revealedDoor;
-            do {
-                revealedDoor = Math.floor(Math.random() * numDoors);
-            } while (revealedDoor === carDoor || revealedDoor === playerChoice);
+          const hostOptions = [0, 1, 2].filter(
+            (index) => index !== userPick && shuffledDoors[index] === '🐐'
+          );
+          const hostReveals = hostOptions[Math.floor(Math.random() * hostOptions.length)];
 
-            const switchChoice = [0, 1, 2].find(
-                door => door !== playerChoice && door !== revealedDoor
+	  if(switchStrategy)
+	  {
+            // Switch user pick
+            userPick = [0, 1, 2].find(
+              (index) => index !== userPick && index !== hostReveals
             );
+          }
+	  
+          if(shuffledDoors[userPick] === '🚗') ++wins;
+          
+          const probability = (wins / i) * 100;
 
-            const isWin = Math.random() < 0.5 ? (playerChoice === carDoor) : (switchChoice === carDoor);
-
-            return { doors, playerChoice, revealedDoor, isWin };
+          results.push({
+            trial: i,
+            probability: probability,
+            doors: shuffledDoors,
+	    userFirstPick,
+            userPick,
+            hostReveals
+          });
         }
 
-        function drawChart(keepProbabilities, switchProbabilities) {
-            const canvas = document.getElementById('chart');
-            const ctx = canvas.getContext('2d');
+        return results;
+      };
 
-            // Clear the canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const width = canvas.width;
-            const height = canvas.height;
-            const maxTrials = keepProbabilities.length;
+      function drawGraph(keepData, switchData){
+        const canvas = document.getElementById("graph");
+        const ctx = canvas.getContext("2d");
 
-            // Draw axes
-            ctx.strokeStyle = '#000';
-            ctx.beginPath();
-            ctx.moveTo(40, 10);
-            ctx.lineTo(40, height - 40);
-            ctx.lineTo(width - 10, height - 40);
-            ctx.stroke();
+        // Clear the canvas
+        ctx.fillStyle = "#f0f0f0";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Labels
-            ctx.font = '14px Arial';
-            ctx.fillText('Probability', 5, 20);
-            ctx.fillText('Trials', width - 60, height - 10);
+      	// Set up graph dimensions
+      	const width = canvas.width - 100;
+      	const height = canvas.height - 120;
+      	const offsetX = 50;
+      	const offsetY = 70;
 
-            // Draw data
-            ctx.strokeStyle = 'red';
-            ctx.beginPath();
-            keepProbabilities.forEach((prob, i) => {
-                const x = 40 + (i / maxTrials) * (width - 50);
-                const y = (1 - prob) * (height - 50) + 10;
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
-            ctx.stroke();
+      	// Draw axes
+      	ctx.beginPath();
+      	ctx.moveTo(offsetX, offsetY);
+      	ctx.lineTo(offsetX, height + offsetY);
+      	ctx.lineTo(width + offsetX, height + offsetY);
+      	ctx.strokeStyle = "black";
+      	ctx.lineWidth = 2;
+      	ctx.stroke();
 
-            ctx.strokeStyle = 'blue';
-            ctx.beginPath();
-            switchProbabilities.forEach((prob, i) => {
-                const x = 40 + (i / maxTrials) * (width - 50);
-                const y = (1 - prob) * (height - 50) + 10;
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
-            ctx.stroke();
+        // Label axes
+        ctx.font = "14px Arial";
+        ctx.fillStyle = "#000000";
+        ctx.fillText("0%", offsetX - 30, height + offsetY);
+        ctx.fillText("100%", offsetX - 40, offsetY);
+        ctx.fillText("Trials", width + offsetX - 30, height + offsetY + 30);
 
-            // Add legend
-            ctx.fillStyle = 'red';
-            ctx.fillRect(50, 10, 10, 10);
-            ctx.fillStyle = 'black';
-            ctx.fillText('Keep Strategy', 65, 20);
+        const plotGraph = (data, color, strategy, textRow) => {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
 
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(50, 30, 10, 10);
-            ctx.fillStyle = 'black';
-            ctx.fillText('Switch Strategy', 65, 40);
+
+          data.forEach((point, index) => {
+            const x = offsetX + ( (point.trial -1 )/ data.length) * width;
+            const y = height + offsetY - (point.probability / 100) * height;
+            if (index === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          });
+
+          ctx.stroke();
+	  
+          // Add text above the graph line
+          const text = `${strategy} cumulative probability = ${data[data.length - 1].probability.toFixed(2)}%`;
+          const textX = offsetX + width / 3 ; // Center the text
+          const textY = offsetY -20*(textRow + 1); // Position above the graph
+          ctx.fillStyle = color;
+          ctx.font = "14px Arial";
+          ctx.fillText(text, textX, textY);
         }
-    </script>
+
+        plotGraph(keepData, 'red', "Keep", 0)
+        plotGraph(switchData, 'blue', "Switch", 1)
+
+      }
+
+      const keep_results = simulateMontyHall(false);
+      const switch_results = simulateMontyHall(true);
+             
+      drawGraph(keep_results, switch_results);
+      drawHeading();
+
+      for(let trial = 0; trial < trials; ++trial)
+      {
+        for(let col = 0; col < columns; ++col)
+        {
+	  const doorNo = col % (columns/2);
+	  const result = col < columns/2 ? keep_results[trial]: switch_results[trial];
+	  const door = result.doors[doorNo]
+          let highlight = null;
+          let dotted = false;
+
+	  if(doorNo == result.userPick) highlight = '#0984e3'
+	  else if(doorNo == result.hostReveals) highlight = '#e0115f'
+	  else if(doorNo === result.userFirstPick)
+	  {
+	    highlight = '#0984e3'
+	    dotted = true;
+	  }
+
+          drawCell(col, trial, door, highlight, dotted);
+          
+        }
+      }
+
+      canvas.addEventListener('mousemove', function (event) {
+        const rect = canvas.getBoundingClientRect();
+        let y = Math.floor((event.clientY - rect.top - 70)/cellSize);
+	let x = event.clientX - rect.left;
+
+	if( x< 3*cellSize && y>= 0 && y<trials)
+	{
+  	  x = Math.floor(x/cellSize)
+	  x = Math.min(Math.max(x, 0), columns);		  	
+	  y = Math.min(Math.max(y, 0), trials);	
+
+	  const result = keep_results[y];
+	  const playerPick = result.userPick + 1;
+	  const hostRevealed = result.hostReveals + 1;
+	  const behindDoor = result.doors[result.userPick];
+
+	  document.getElementById("trial").innerHTML = y;
+	  document.getElementById("trial-data").innerHTML = 
+		  `The player selected door ${playerPick}. The host revealed a goat behind door ${hostRevealed} but the player kept his choice and got a ${behindDoor}`;
+
+
+	}
+	else if ( x> 3*cellSize + columnGap && y>= 0 && y<trials)
+	{
+  	  x = Math.floor((x - columnGap)/cellSize - columns/2)
+	  x = Math.min(Math.max(x, 0), Math.floor(columns/2));
+	  y = Math.min(Math.max(y, 0), trials);		  	
+
+	  const result = switch_results[y]
+	  const playerFirstPick = result.userFirstPick + 1;
+	  const playerPick = result.userPick + 1;
+	  const hostRevealed = result.hostReveals + 1;
+	  const behindDoor = result.doors[result.userPick];
+
+	  document.getElementById("trial").innerHTML = y;
+	  document.getElementById("trial-data").innerHTML = 
+		  `The player selected door ${playerFirstPick}. The host revealed a goat behind door ${hostRevealed} and offered a switch. The player switched to door ${playerPick} and got a ${behindDoor}.`;
+
+	} 
+
+
+	});
+
+      document.getElementById("info").hidden = false;
+
+    }
+  </script>
 </div>
 
 
