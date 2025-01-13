@@ -5,7 +5,7 @@ title = 'furqan'
 theme = 'cactus'
 
 [params]
-description = "Hi there,"
+description = ""
 showAllPostsOnHomePage = true
 
 
@@ -21,7 +21,6 @@ showAllPostsOnHomePage = true
         [markup.goldmark.extensions.passthrough.delimiters]
           block = [['\[', '\]'], ['$$', '$$']]
           inline = [['\(', '\)']]
-
 
 
 [[menu.main]]
