@@ -22,7 +22,7 @@ Just like my previous blog post, I've written another script to simulate the Mon
   <input type="number" id="trials" min="1" value="1000">
   <button onclick="runSimulation()">Run Simulation</button>
   <br/><br/>
-  <canvas id="graph" width="800" height="400"></canvas>
+  <canvas id="graph" style="width:100%" height="400"></canvas>
   <div id="info" style="height: 7em" hidden>
     <p>
       <span style="color: #e0115f; font-weight: bold;">Red circle</span>: The door host revealed a goat.<br>
@@ -30,7 +30,7 @@ Just like my previous blog post, I've written another script to simulate the Mon
       <span style="color: #0984e3; font-weight: bold;">Blue circle (dotted) </span>: Player's first choice of door when switching.<br>
       <span style="color: orange; font-weight: bold;">Sample #<span id="trial"></span></span>: <span id="trial-data">Hover over the trials below.</span></p>
   </div>
-  <canvas id="montyCanvas"></canvas>
+  <canvas id="montyCanvas" style="width:100%"></canvas>
 
   <script>
     function runSimulation() {
