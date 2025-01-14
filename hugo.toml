@@ -12,7 +12,7 @@ showAllPostsOnHomePage = true
 
 [services]
   [services.googleAnalytics]
-    id = 'G-3SNBC5QD82'
+    id = 'G-7HB4E08XLS'
 
 [markup]
   [markup.goldmark]
