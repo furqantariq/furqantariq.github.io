@@ -2,11 +2,10 @@ baseURL = 'https://furqantariq.github.io/'
 languageCode = 'en-us'
 title = 'furqan'
 author = "Furqan"
-
 theme = 'cactus'
 
 [params]
-description = ""
+description = "Hi there,"
 showAllPostsOnHomePage = true
 
 
@@ -33,3 +32,19 @@ weight = 1
 name = "twitch"
 url = "/twitch"
 weight = 2
+
+[[params.social]]
+  name = "twitch"
+  link = "https://twitch.tv/amoebatron"
+
+[[params.social]]
+  name = "strava"
+  link = "https://www.strava.com/athletes/120590510"
+
+[[params.social]]
+  name = "instagram"
+  link = "https://www.instagram.com/furqantq"
+
+[[params.social]]
+  name = "youtube"
+  link = "https://www.youtube.com/@furqantq"
